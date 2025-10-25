@@ -34,7 +34,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Navigation items with icons
@@ -236,15 +236,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
           ))}
 
           {/* Add Solution Button (for vendors and superadmins) */}
-          {isAuthenticated && (user?.role === 'vendor' || user?.role === 'superadmin') && (
+          {!isLoading && isAuthenticated && (user?.role === 'vendor' || user?.role === 'superadmin') && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
               <div className="relative">
-                <Link href="/solutions/new">
-                  <div className={`group relative flex items-center rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 transition-all duration-200 cursor-pointer ${
+                <button 
+                  onClick={() => router.push('/solutions/new')}
+                  className={`group relative flex items-center rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 transition-all duration-200 cursor-pointer w-full ${
                     isCollapsed ? 'justify-center px-3 py-3' : 'justify-between px-4 py-3'
                   }`}>
                     <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
@@ -263,8 +264,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                         )}
                       </AnimatePresence>
                     </div>
-                  </div>
-                </Link>
+                  </button>
 
                 {/* Tooltip for collapsed state */}
                 {isCollapsed && (

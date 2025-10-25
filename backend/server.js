@@ -89,6 +89,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/solutions', solutionRoutes);
 app.use('/api/queries', queryRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/companies', require('./routes/companies'));
 
 // API documentation endpoint
 app.get('/api', (req, res) => {

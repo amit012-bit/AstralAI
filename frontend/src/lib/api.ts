@@ -244,6 +244,21 @@ export const solutionsApi = {
   },
 };
 
+// Companies API functions
+export const companiesApi = {
+  // Get all companies (for superadmin)
+  getCompanies: async () => {
+    const response = await api.get<ApiResponse>('/companies');
+    return response.data;
+  },
+
+  // Get company by ID
+  getCompany: async (id: string) => {
+    const response = await api.get<ApiResponse>(`/companies/${id}`);
+    return response.data;
+  },
+};
+
 // Queries API functions
 export const queriesApi = {
   // Get all queries

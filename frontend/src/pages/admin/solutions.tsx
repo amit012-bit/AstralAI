@@ -334,7 +334,7 @@ const AdminSolutionsPage: React.FC = () => {
                             <span>Category: {solution.category}</span>
                             <span>Industry: {solution.industry}</span>
                             <span>Vendor: {solution.vendorId.firstName} {solution.vendorId.lastName}</span>
-                            <span>Company: {solution.companyId.name}</span>
+                            <span>Company: {solution.companyId?.name || 'No company assigned'}</span>
                           </div>
                         </div>
                         

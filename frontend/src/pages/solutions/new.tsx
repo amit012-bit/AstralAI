@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { motion } from 'framer-motion';
 import Layout from '../../components/Layout/Layout';
 import { useAuth } from '../../contexts/AuthContext';
-import api from '../../lib/api';
+import api, { companiesApi } from '../../lib/api';
 
 // Form data interface
 interface SolutionFormData {
@@ -14,6 +14,7 @@ interface SolutionFormData {
   category: string;
   industry: string;
   subcategory: string;
+  companyId?: string; // For superadmin to select company
   tags: string[];
   features: Array<{
     name: string;
@@ -165,13 +166,14 @@ const deploymentTypes = [
 
 const NewSolutionPage: React.FC = () => {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [formData, setFormData] = useState<SolutionFormData>(initialFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
   const [success, setSuccess] = useState(false);
+  const [companies, setCompanies] = useState<any[]>([]);
 
   // Redirect if not authenticated or not a vendor
   useEffect(() => {
@@ -179,15 +181,49 @@ const NewSolutionPage: React.FC = () => {
       router.push('/auth/login');
       return;
     }
-    if (user?.role !== 'vendor') {
+    if (user?.role !== 'vendor' && user?.role !== 'superadmin') {
       router.push('/dashboard');
       return;
     }
   }, [isAuthenticated, user, router]);
 
-  // Don't render if not authenticated or not a vendor
-  if (!isAuthenticated || user?.role !== 'vendor') {
-    return null;
+  // Fetch companies for superadmin
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      if (user?.role === 'superadmin') {
+        try {
+          const response = await companiesApi.getCompanies();
+          setCompanies(response.data || []);
+        } catch (error) {
+          console.error('Error fetching companies:', error);
+        }
+      }
+    };
+
+    fetchCompanies();
+  }, [user?.role]);
+
+
+  // Show loading while authentication is being checked
+  if (isLoading) {
+    return (
+      <Layout title="Add Solution">
+        <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+          <div className="text-white">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render if not authenticated or not a vendor/superadmin
+  if (!isAuthenticated || (user?.role !== 'vendor' && user?.role !== 'superadmin')) {
+    return (
+      <Layout title="Access Denied">
+        <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+          <div className="text-white">Access denied. You must be a vendor or superadmin to add solutions.</div>
+        </div>
+      </Layout>
+    );
   }
 
   // Input change handlers
@@ -537,6 +573,32 @@ const NewSolutionPage: React.FC = () => {
                         Separate tags with commas
                       </p>
                     </div>
+
+                    {/* Company Selection - Only for Superadmin */}
+                    {user?.role === 'superadmin' && (
+                      <div className="lg:col-span-2">
+                        <label htmlFor="companyId" className="block text-sm font-medium text-gray-300 mb-2">
+                          Company *
+                        </label>
+                        <select
+                          id="companyId"
+                          required
+                          value={formData.companyId || ''}
+                          onChange={(e) => handleInputChange('companyId', e.target.value)}
+                          className="w-full border border-gray-600 rounded-md px-3 py-2 bg-gray-800 text-white focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">Select a company</option>
+                          {companies.map(company => (
+                            <option key={company._id} value={company._id}>
+                              {company.name}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-sm text-gray-400 mt-1">
+                          Select the company this solution belongs to
+                        </p>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Step Navigation Buttons */}
