@@ -1,4 +1,6 @@
-# Astral AI Solution Hub
+# AstralAI
+
+**Astral + AI — starry, visionary AI hub**
 
 A comprehensive full-stack AI solutions marketplace platform built with MERN stack + Next.js, featuring intelligent matching, role-based access control, and modern UI/UX.
 
@@ -46,17 +48,21 @@ A comprehensive full-stack AI solutions marketplace platform built with MERN sta
 ## 📦 Installation & Setup
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- MongoDB Atlas account (cloud database) or local MongoDB (v6 or higher)
-- npm or yarn
+- **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
+- **MongoDB Atlas account** (cloud database) - [Sign up here](https://www.mongodb.com/atlas)
+- **npm** or **yarn** package manager
+- **Git** for version control
 
 ### Database Setup
 This project uses MongoDB Atlas (cloud database) for easy deployment and collaboration.
 
 **Quick Setup:**
 1. Create a free MongoDB Atlas account at [mongodb.com/atlas](https://www.mongodb.com/atlas)
-2. Create a cluster and get your connection string
-3. Create a `.env` file in the `backend/` directory with your MongoDB URI
+2. Create a new cluster (choose the free tier)
+3. Create a database user with read/write permissions
+4. Whitelist your IP address (or use 0.0.0.0/0 for development)
+5. Get your connection string from "Connect" → "Connect your application"
+6. Create a `.env` file in the `backend/` directory with your MongoDB URI
 
 ### Environment Variables
 Create a `.env` file in the `backend/` directory:
@@ -74,14 +80,22 @@ NODE_ENV=development
 
 # CORS Configuration
 FRONTEND_URL=http://localhost:3000
+
+# OpenAI Configuration (Optional - for AI Agent features)
+OPENAI_API_KEY=your_openai_api_key_here
 ```
+
+**Important Notes:**
+- Replace `username` and `password` with your MongoDB Atlas credentials
+- Generate a strong JWT secret for production
+- The OpenAI API key is optional but required for AI Agent chat features
 
 ### Installation Steps
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/amit012-bit/Ignite_Fusion_AI_Solution_Hub.git
-cd Ignite_Fusion_AI_Solution_Hub
+git clone https://github.com/amit012-bit/AstralAI.git
+cd AstralAI
 ```
 
 2. **Install Backend Dependencies**
@@ -107,15 +121,30 @@ node scripts/seed-data.js
 ```
 
 6. **Start the Application**
+
+**Option 1: Using separate terminals (Recommended)**
 ```bash
-# Start Backend (Terminal 1)
+# Terminal 1 - Start Backend
 cd backend
 npm start
 
-# Start Frontend (Terminal 2)
+# Terminal 2 - Start Frontend  
 cd frontend
 npm run dev
 ```
+
+**Option 2: Using npm scripts (if available)**
+```bash
+# From root directory
+npm run dev:backend  # Starts backend on port 5000
+npm run dev:frontend # Starts frontend on port 3000
+```
+
+**Access the Application:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
+- API Documentation: http://localhost:5000/api
+- Health Check: http://localhost:5000/health
 
 ## 🔑 Default Login Credentials
 
@@ -147,6 +176,32 @@ After seeding the database, you can use these credentials:
 - `POST /api/queries` - Create new query
 - `GET /api/queries/:id` - Get query by ID
 
+## 🏗️ Project Structure
+
+```
+AstralAI/
+├── backend/                 # Node.js/Express API
+│   ├── config/             # Database configuration
+│   ├── controllers/        # Route controllers
+│   ├── middleware/         # Authentication & validation
+│   ├── models/            # MongoDB schemas
+│   ├── routes/            # API routes
+│   ├── scripts/           # Database seeding scripts
+│   ├── services/          # Business logic services
+│   └── server.js          # Main server file
+├── frontend/               # Next.js React application
+│   ├── src/
+│   │   ├── components/    # Reusable React components
+│   │   ├── contexts/      # React contexts
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── lib/           # API utilities
+│   │   ├── pages/         # Next.js pages
+│   │   └── styles/        # Global styles
+│   └── public/            # Static assets
+├── docker-compose.yml     # Docker configuration
+└── README.md             # This file
+```
+
 ## 🚀 Deployment
 
 ### Backend Deployment
@@ -158,6 +213,42 @@ After seeding the database, you can use these credentials:
 1. Deploy to Vercel, Netlify, or similar platforms
 2. Configure environment variables for API endpoints
 3. Update CORS settings in backend
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**1. MongoDB Connection Error**
+```
+Error: connect ECONNREFUSED
+```
+- Ensure MongoDB Atlas cluster is running
+- Check your IP address is whitelisted
+- Verify connection string format
+
+**2. Port Already in Use**
+```
+Error: listen EADDRINUSE :::5000
+```
+- Kill the process: `lsof -i :5000` then `kill -9 <PID>`
+- Or change the port in your `.env` file
+
+**3. Module Not Found Errors**
+```
+Module not found: Can't resolve '@react-three/fiber'
+```
+- Run `npm install` in both frontend and backend directories
+- Clear node_modules and reinstall if needed
+
+**4. Authentication Issues**
+- Ensure JWT_SECRET is set in your `.env` file
+- Check that user credentials are correct
+- Verify database seeding was successful
+
+### Getting Help
+- Check the console logs for detailed error messages
+- Ensure all environment variables are properly set
+- Verify that MongoDB Atlas is accessible from your IP
 
 ## 🤝 Contributing
 
@@ -180,4 +271,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Ignite Fusion AI Solution Hub** - Connecting businesses with cutting-edge AI solutions 🚀
+**AstralAI** - Connecting businesses with cutting-edge AI solutions 🚀✨
