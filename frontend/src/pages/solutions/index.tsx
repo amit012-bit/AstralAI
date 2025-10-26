@@ -410,9 +410,9 @@ const SolutionsPage: React.FC = () => {
                           <div className="absolute top-2 right-2 z-20 group/tooltip">
                             <div className="w-14 h-14 relative">
                               {/* Glowing background effect */}
-                              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 via-orange-400/20 to-yellow-600/20 rounded-full blur-sm animate-pulse"></div>
+                              <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 via-emerald-400/20 to-green-600/20 rounded-full blur-sm animate-pulse"></div>
                               {/* Sleek thin border and shadow */}
-                              <div className="absolute inset-0 rounded-full border border-yellow-300 shadow-2xl bg-white/90"></div>
+                              <div className="absolute inset-0 rounded-full border border-green-300 shadow-2xl bg-green-50/95"></div>
                               <img 
                                 src="/security.png" 
                                 alt="Premium Shield" 
@@ -533,9 +533,9 @@ const SolutionsPage: React.FC = () => {
                           <div className="absolute top-2 right-2 z-20 group/tooltip">
                             <div className="w-14 h-14 relative">
                               {/* Glowing background effect */}
-                              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 via-orange-400/20 to-yellow-600/20 rounded-full blur-sm animate-pulse"></div>
+                              <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 via-emerald-400/20 to-green-600/20 rounded-full blur-sm animate-pulse"></div>
                               {/* Sleek thin border and shadow */}
-                              <div className="absolute inset-0 rounded-full border border-yellow-300 shadow-2xl bg-white/90"></div>
+                              <div className="absolute inset-0 rounded-full border border-green-300 shadow-2xl bg-green-50/95"></div>
                               <img 
                                 src="/security.png" 
                                 alt="Premium Shield" 
