@@ -405,6 +405,30 @@ const SolutionsPage: React.FC = () => {
                           <div className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse delay-200" />
                           <div className="absolute bottom-4 left-4 w-1 h-1 bg-blue-400 rounded-full animate-pulse delay-300" />
                         </div>
+                        {/* Premium Badge */}
+                        {solution.isPremium && (
+                          <div className="absolute top-2 right-2 z-20 group/tooltip">
+                            <div className="w-14 h-14 relative">
+                              {/* Glowing background effect */}
+                              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 via-orange-400/20 to-yellow-600/20 rounded-full blur-sm animate-pulse"></div>
+                              {/* Sleek thin border and shadow */}
+                              <div className="absolute inset-0 rounded-full border border-yellow-300 shadow-2xl bg-white/90"></div>
+                              <img 
+                                src="/security.png" 
+                                alt="Premium Shield" 
+                                className="w-full h-full object-contain relative z-10 drop-shadow-2xl filter brightness-110"
+                              />
+                            </div>
+                            {/* Hover Tooltip */}
+                            <div className="absolute right-0 top-full mt-2 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                              <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg border border-gray-700">
+                                Trusted Solution by AstralAI
+                                <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-gray-700"></div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Gradient Header */}
                         <div className="relative h-32 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 flex items-center justify-center">
                           <div className="absolute inset-0 bg-black/20" />
@@ -504,6 +528,30 @@ const SolutionsPage: React.FC = () => {
                           <div className="absolute top-8 right-8 w-1 h-1 bg-purple-400 rounded-full animate-pulse delay-100" />
                           <div className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse delay-200" />
                         </div>
+                        {/* Premium Badge for List View */}
+                        {solution.isPremium && (
+                          <div className="absolute top-2 right-2 z-20 group/tooltip">
+                            <div className="w-14 h-14 relative">
+                              {/* Glowing background effect */}
+                              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 via-orange-400/20 to-yellow-600/20 rounded-full blur-sm animate-pulse"></div>
+                              {/* Sleek thin border and shadow */}
+                              <div className="absolute inset-0 rounded-full border border-yellow-300 shadow-2xl bg-white/90"></div>
+                              <img 
+                                src="/security.png" 
+                                alt="Premium Shield" 
+                                className="w-full h-full object-contain relative z-10 drop-shadow-2xl filter brightness-110"
+                              />
+                            </div>
+                            {/* Hover Tooltip */}
+                            <div className="absolute right-0 top-full mt-2 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                              <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg border border-gray-700">
+                                Trusted Solution by AstralAI
+                                <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-gray-700"></div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
                         <div className="relative flex items-start space-x-4">
                           {/* Solution Icon */}
                           <div className="flex-shrink-0">

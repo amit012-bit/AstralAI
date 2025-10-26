@@ -9,8 +9,9 @@ const Company = require('../models/Company');
 const { authenticate, authorize } = require('../middleware/auth');
 const { catchAsync } = require('../middleware/errorHandler');
 
+
 // Get all companies (for superadmin to select when creating solutions)
-router.get('/', authenticate, authorize(['superadmin']), catchAsync(async (req, res, next) => {
+router.get('/', authenticate, authorize('superadmin'), catchAsync(async (req, res, next) => {
   const companies = await Company.find({})
     .select('name description website industry logo')
     .sort({ name: 1 });
@@ -22,7 +23,7 @@ router.get('/', authenticate, authorize(['superadmin']), catchAsync(async (req, 
 }));
 
 // Get company by ID
-router.get('/:id', authenticate, authorize(['superadmin']), catchAsync(async (req, res, next) => {
+router.get('/:id', authenticate, authorize('superadmin'), catchAsync(async (req, res, next) => {
   const company = await Company.findById(req.params.id)
     .select('name description website industry logo');
 

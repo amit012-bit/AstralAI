@@ -5,10 +5,26 @@
 
 import api from './api';
 
+export interface SolutionCard {
+  id: string;
+  title: string;
+  company: string;
+  website: string;
+  industry: string;
+  category: string;
+  shortDescription: string;
+  pricing: string;
+  price?: number;
+  logo?: string;
+  isPremium?: boolean;
+}
+
 export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp?: string;
+  solutionCards?: SolutionCard[];
+  showWelcomeGrid?: boolean;
 }
 
 export interface ChatResponse {
@@ -23,6 +39,7 @@ export interface ChatResponse {
       blogsFound: number;
     };
     timestamp: string;
+    solutionCards?: SolutionCard[];
   };
   error?: string;
 }
@@ -113,6 +130,23 @@ class ChatApi {
         success: false,
         error: error.response?.data?.error || 'AI agent service unavailable'
       };
+    }
+  }
+
+  /**
+   * Request internet search when no system matches found
+   */
+  async requestInternetSearch(message: string, sessionId?: string): Promise<ChatResponse> {
+    try {
+      const response = await api.post(`${this.baseUrl}/internet-search`, {
+        message: message.trim(),
+        sessionId: sessionId
+      });
+
+      return response.data;
+    } catch (error: any) {
+      console.error('Error requesting internet search:', error);
+      throw new Error(error.response?.data?.error || 'Failed to perform internet search');
     }
   }
 }

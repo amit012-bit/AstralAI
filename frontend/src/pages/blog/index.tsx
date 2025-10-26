@@ -6,7 +6,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { 
-  MagnifyingGlassIcon,
   FunnelIcon,
   CalendarIcon,
   ClockIcon,
@@ -262,96 +261,7 @@ const BlogPage: React.FC = () => {
       pageType="blog"
     >
       <div className="bg-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="lg:grid lg:grid-cols-4 lg:gap-8">
-          {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6 sticky top-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-white">Filters</h2>
-                <button
-                  onClick={clearFilters}
-                  className="text-sm text-blue-400 hover:text-blue-300 font-medium"
-                >
-                  Clear All
-                </button>
-              </div>
-
-              {/* Search */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Search Posts
-                </label>
-                <div className="relative">
-                  <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange('search', e.target.value)}
-                    placeholder="Search blog posts..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-600 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
-
-              {/* Category Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Category
-                </label>
-                <select
-                  value={filters.category}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="w-full border border-gray-600 rounded-md px-3 py-2 bg-gray-800 text-white focus:ring-blue-500 focus:border-blue-500"
-                >
-                  {CATEGORIES.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Industry Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Industry
-                </label>
-                <select
-                  value={filters.industry}
-                  onChange={(e) => handleFilterChange('industry', e.target.value)}
-                  className="w-full border border-gray-600 rounded-md px-3 py-2 bg-gray-800 text-white focus:ring-blue-500 focus:border-blue-500"
-                >
-                  {INDUSTRIES.map((industry) => (
-                    <option key={industry} value={industry}>
-                      {industry}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Sort */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Sort By
-                </label>
-                <select
-                  value={filters.sort}
-                  onChange={(e) => handleFilterChange('sort', e.target.value)}
-                  className="w-full border border-gray-600 rounded-md px-3 py-2 bg-gray-800 text-white focus:ring-blue-500 focus:border-blue-500"
-                >
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Toolbar */}
             <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-4 mb-6">
               <div className="flex items-center justify-between">
@@ -621,9 +531,7 @@ const BlogPage: React.FC = () => {
                 </button>
               </div>
             )}
-          </div>
         </div>
-      </div>
       </div>
     </Layout>
   );

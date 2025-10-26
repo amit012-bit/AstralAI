@@ -35,6 +35,7 @@ const sendMessage = async (req, res, next) => {
         response: result.response,
         sessionId: result.sessionId,
         context: result.context,
+        solutionCards: result.solutionCards,
         timestamp: new Date().toISOString()
       }
     });

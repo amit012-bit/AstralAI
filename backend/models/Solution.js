@@ -290,6 +290,12 @@ const solutionSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+
+  // Premium status
+  isPremium: {
+    type: Boolean,
+    default: false
+  },
   
   // SEO and marketing
   metaTitle: String,
