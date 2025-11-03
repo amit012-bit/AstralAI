@@ -34,6 +34,7 @@ interface PageHeaderProps {
   onAdvancedSearch?: (filters: FilterState) => void;
   currentFilters?: FilterState;
   pageType?: 'solutions' | 'queries' | 'blog';
+  leftOffset?: number; // pixels to offset for collapsed/expanded sidebar
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
@@ -46,7 +47,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   additionalContent,
   onAdvancedSearch,
   currentFilters,
-  pageType
+  pageType,
+  leftOffset = 240
 }) => {
   const router = useRouter();
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
@@ -117,7 +119,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const finalSearchPlaceholder = searchPlaceholder || defaultContent.searchPlaceholder;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-700 shadow-sm h-20 flex items-center" style={{ marginLeft: '240px', width: 'calc(100% - 240px)' }}>
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-700 shadow-sm h-20 flex items-center" style={{ marginLeft: `${leftOffset}px`, width: `calc(100% - ${leftOffset}px)` }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="flex items-center justify-between">
           {/* Left Side - Page Title */}

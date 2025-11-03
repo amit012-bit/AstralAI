@@ -5,8 +5,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// import ReactMarkdown from 'react-markdown';
-// import remarkGfm from 'remark-gfm';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { 
   PaperAirplaneIcon,
   UserIcon, 
@@ -27,6 +27,200 @@ import { chatApi, ChatMessage, ChatResponse, SolutionCard } from '@/lib/chatApi'
 import { toast } from 'react-hot-toast';
 import ParticleRing from '../Background/ParticleRing';
 import { useRouter } from 'next/router';
+import { useAuth } from '@/contexts/AuthContext';
+
+// Welcome grid shown in the first assistant message.
+// Defined outside ChatKit to avoid remounting on each parent re-render (prevents animations from replaying on every keystroke).
+const WelcomeGrid: React.FC<{ onPick: (text: string) => void }> = ({ onPick }) => (
+  <div className="mt-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl">
+      {/* Example Questions */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="relative group h-full"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+        <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
+          <div className="flex items-center space-x-2 mb-4">
+            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              Example Questions
+            </h4>
+          </div>
+          <div className="space-y-3 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
+            {[
+              "I need a chatbot for customer service",
+              "What AI solutions work best for healthcare?",
+              "Show me predictive analytics tools",
+              "Help me find vendors in finance"
+            ].map((question, idx) => (
+              <motion.button
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + idx * 0.1 }}
+                onClick={() => onPick(question)}
+                className="w-full text-left bg-gradient-to-r from-gray-800/60 to-gray-700/60 hover:from-blue-500/20 hover:to-purple-500/20 text-gray-200 hover:text-white text-xs px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 border border-gray-600/30 hover:border-blue-400/50"
+              >
+                {question}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* What Agent Can Do */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="relative group h-full"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+        <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
+          <div className="flex items-center space-x-2 mb-4">
+            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+            <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              What Agent Can Do
+            </h4>
+          </div>
+          <div className="space-y-3 flex-1">
+            {[
+              "Recommend AI solutions based on your needs",
+              "Explain AI technologies and applications",
+              "Connect you with verified vendors",
+              "Provide industry insights and trends"
+            ].map((capability, idx) => (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + idx * 0.1 }}
+                className="flex items-start space-x-3"
+              >
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <SparklesIcon className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-gray-300 text-xs leading-relaxed">{capability}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Tips for Better Results */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="relative group h-full"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 via-emerald-500/20 to-teal-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+        <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
+          <div className="flex items-center space-x-2 mb-4">
+            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              Tips for Better Results
+            </h4>
+          </div>
+          <div className="space-y-3 flex-1">
+            {[
+              "Be specific about your industry and use case",
+              "Mention your budget and timeline if relevant",
+              "Ask follow-up questions for detailed insights",
+              "Use the fullscreen mode for longer conversations"
+            ].map((tip, idx) => (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + idx * 0.1 }}
+                className="flex items-start space-x-3"
+              >
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <span className="text-gray-300 text-xs leading-relaxed">{tip}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  </div>
+);
+
+// Memoized Solution Card to prevent re-animations on parent re-renders
+const SolutionCardView: React.FC<{ solution: SolutionCard; onClick: (id: string) => void }> = React.memo(({ solution, onClick }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    onClick={() => onClick(solution.id)}
+    className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-3 cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-blue-300 group h-full flex flex-col relative"
+  >
+    {/* Premium Badge */}
+    {solution.isPremium && (
+      <div className="absolute top-2 right-2 z-10 group/tooltip">
+        <div className="w-14 h-14 relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 via-emerald-400/20 to-green-600/20 rounded-full blur-sm animate-pulse"></div>
+          <div className="absolute inset-0 rounded-full border border-green-300 shadow-2xl bg-green-50/95"></div>
+          <img 
+            src="/security.png" 
+            alt="Premium Shield" 
+            className="w-full h-full object-contain relative z-10 drop-shadow-2xl filter brightness-110"
+          />
+        </div>
+        <div className="absolute right-0 top-full mt-2 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+          <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg border border-gray-700">
+            Trusted Solution by AstralAI
+            <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-gray-700"></div>
+          </div>
+        </div>
+      </div>
+    )}
+    <div className="flex items-start justify-between mb-2">
+      <div className="flex-1 min-w-0">
+        <h4 className="font-semibold text-gray-900 text-sm mb-1 group-hover:text-blue-600 transition-colors line-clamp-1">
+          {solution.title}
+        </h4>
+        <div className="flex items-center space-x-1 text-xs text-gray-600">
+          <BuildingOfficeIcon className="h-3 w-3 flex-shrink-0" />
+          <span className="truncate">{solution.company}</span>
+        </div>
+      </div>
+      <ArrowTopRightOnSquareIcon className="h-4 w-4 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0 ml-2" />
+    </div>
+    <p className="text-xs text-gray-600 mb-3 line-clamp-2 flex-1">
+      {solution.shortDescription}
+    </p>
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-1">
+        <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
+          {solution.category}
+        </span>
+        <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
+          {solution.industry}
+        </span>
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center space-x-1 text-gray-500">
+          <CurrencyDollarIcon className="h-3 w-3" />
+          <span>{solution.pricing}</span>
+        </div>
+        {solution.website && (
+          <div className="flex items-center space-x-1 text-blue-600">
+            <GlobeAltIcon className="h-3 w-3" />
+            <span className="truncate max-w-20">{solution.website}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </motion.div>
+));
 
 interface ChatKitProps {
   className?: string;
@@ -41,6 +235,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
 }) => {
   // Router for navigation
   const router = useRouter();
+  const { user } = useAuth();
   
   // State management
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -84,9 +279,10 @@ const ChatKit: React.FC<ChatKitProps> = ({
         setSessionId(newSessionId);
         
         // Add welcome message with grid layout
+        const displayName = user?.firstName ? user.firstName : 'there';
         const welcomeMessage: ChatMessage = {
           role: 'assistant',
-          content: `👋 Hello! I'm **Agent**, your AI assistant for AstralAI. I can help you discover AI solutions, understand technologies, and connect with verified vendors.`,
+          content: `👋 Hi ${displayName} — I'm **Agent**, a healthcare AI solutions expert. To make sure I help effectively, could you share your setting (e.g., hospital, clinic, telehealth), primary use case (e.g., imaging, NLP for notes, triage, RCM), and any constraints (HIPAA, EHR/PACS integration, timeline, budget)?`,
           timestamp: new Date().toISOString(),
           showWelcomeGrid: true
         };
@@ -173,9 +369,10 @@ const ChatKit: React.FC<ChatKitProps> = ({
       await chatApi.clearConversationHistory(sessionId);
       
       // Reset to welcome message
+      const displayName = user?.firstName ? user.firstName : 'there';
       const welcomeMessage: ChatMessage = {
         role: 'assistant',
-        content: `👋 Hello! I'm **Agent**, your AI assistant for AstralAI. I can help you discover AI solutions, understand technologies, and connect with verified vendors.`,
+        content: `👋 Hi ${displayName} — I'm **Agent**, a healthcare AI solutions expert. Tell me your setting, key use case, and constraints so I can recommend precise options from our database.`,
         timestamp: new Date().toISOString(),
         showWelcomeGrid: true
       };
@@ -248,127 +445,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
     });
   };
 
-  // Welcome Grid Component
-  const WelcomeGrid: React.FC = () => (
-    <div className="mt-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl">
-        {/* Example Questions */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="relative group h-full"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-          <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                Example Questions
-              </h4>
-            </div>
-            <div className="space-y-3 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
-              {[
-                "I need a chatbot for customer service",
-                "What AI solutions work best for healthcare?",
-                "Show me predictive analytics tools",
-                "Help me find vendors in finance"
-              ].map((question, idx) => (
-                <motion.button
-                  key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 + idx * 0.1 }}
-                  onClick={() => setInputMessage(question)}
-                  className="w-full text-left bg-gradient-to-r from-gray-800/60 to-gray-700/60 hover:from-blue-500/20 hover:to-purple-500/20 text-gray-200 hover:text-white text-xs px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 border border-gray-600/30 hover:border-blue-400/50"
-                >
-                  {question}
-                </motion.button>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* What Agent Can Do */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="relative group h-full"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-          <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-              <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                What Agent Can Do
-              </h4>
-            </div>
-            <div className="space-y-3 flex-1">
-              {[
-                "Recommend AI solutions based on your needs",
-                "Explain AI technologies and applications",
-                "Connect you with verified vendors",
-                "Provide industry insights and trends"
-              ].map((capability, idx) => (
-                <motion.div 
-                  key={idx} 
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + idx * 0.1 }}
-                  className="flex items-start space-x-3"
-                >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <SparklesIcon className="h-3 w-3 text-white" />
-                  </div>
-                  <span className="text-gray-300 text-xs leading-relaxed">{capability}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Tips for Better Results */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="relative group h-full"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 via-emerald-500/20 to-teal-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-          <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                Tips for Better Results
-              </h4>
-            </div>
-            <div className="space-y-3 flex-1">
-              {[
-                "Be specific about your industry and use case",
-                "Mention your budget and timeline if relevant",
-                "Ask follow-up questions for detailed insights",
-                "Use the fullscreen mode for longer conversations"
-              ].map((tip, idx) => (
-                <motion.div 
-                  key={idx} 
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + idx * 0.1 }}
-                  className="flex items-start space-x-3"
-                >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <span className="text-gray-300 text-xs leading-relaxed">{tip}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </div>
-  );
+  // Welcome Grid moved to top-level component (see above)
 
   // Solution Card Component
   const SolutionCard: React.FC<{ solution: SolutionCard }> = ({ solution }) => (
@@ -529,19 +606,42 @@ const ChatKit: React.FC<ChatKitProps> = ({
                       : 'bg-white/90 text-gray-900 border border-white/30 rounded-bl-md shadow-lg'
                   }`}>
                     {message.role === 'assistant' ? (
-                      <div className="text-gray-900">
-                        <div className="whitespace-pre-wrap mb-4">
+                      <div className="text-gray-900 prose prose-sm max-w-none">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            h1: ({node, ...props}) => <h1 className="text-2xl font-bold text-gray-900 mb-4 mt-2" {...props} />,
+                            h2: ({node, ...props}) => <h2 className="text-xl font-bold text-gray-900 mb-3 mt-2" {...props} />,
+                            h3: ({node, ...props}) => <h3 className="text-lg font-semibold text-gray-900 mb-2 mt-2" {...props} />,
+                            h4: ({node, ...props}) => <h4 className="text-base font-semibold text-gray-900 mb-2 mt-2" {...props} />,
+                            p: ({node, ...props}) => <p className="mb-3 text-gray-800 leading-relaxed" {...props} />,
+                            strong: ({node, ...props}) => <strong className="font-bold text-gray-900" {...props} />,
+                            em: ({node, ...props}) => <em className="italic text-gray-800" {...props} />,
+                            ul: ({node, ...props}) => <ul className="list-disc list-inside mb-3 space-y-1 text-gray-800" {...props} />,
+                            ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-3 space-y-1 text-gray-800" {...props} />,
+                            li: ({node, ...props}) => <li className="ml-4 mb-1 text-gray-800" {...props} />,
+                            code: ({node, inline, ...props}) => 
+                              inline ? (
+                                <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-900" {...props} />
+                              ) : (
+                                <code className="block bg-gray-100 p-3 rounded text-sm font-mono text-gray-900 mb-3 overflow-x-auto" {...props} />
+                              ),
+                            blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-700 mb-3" {...props} />,
+                          }}
+                        >
                           {message.content}
-                        </div>
-                        {message.showWelcomeGrid && index === 0 && <WelcomeGrid />}
+                        </ReactMarkdown>
+                        {message.showWelcomeGrid && index === 0 && (
+                          <WelcomeGrid onPick={setInputMessage} />
+                        )}
                         {message.solutionCards && message.solutionCards.length > 0 && (
                           <div className="mt-4">
                             <h4 className="text-sm font-semibold text-gray-700 mb-3">
                               💡 Recommended Solutions:
                             </h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl">
-                              {message.solutionCards.map((solution, idx) => (
-                                <SolutionCard key={idx} solution={solution} />
+                              {message.solutionCards.map((solution) => (
+                                <SolutionCardView key={solution.id} solution={solution} onClick={handleSolutionCardClick} />
                               ))}
                             </div>
                           </div>

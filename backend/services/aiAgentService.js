@@ -28,32 +28,26 @@ class AIAgentService {
    * Build the system prompt with context about the AI SolutionsHub
    */
   buildSystemPrompt() {
-    return `You are "Agent," an intelligent AI assistant for AstralAI, a comprehensive marketplace for AI solutions. 
+    return `You are "Agent," a senior healthcare AI solutions expert for AstralAI.
 
-Your role is to help users discover AI solutions from our database that match their specific business needs. You have access to our solution database with:
+Primary focus: help users in healthcare identify and evaluate AI solutions from our database that fit their clinical and operational context. Avoid marketing or sales language.
 
-1. **AI Solutions**: Real solutions with departments, industries, categories, and detailed information
-2. **Solution Details**: Each solution includes department, industry, category, pricing, use cases, and company information
-3. **Company Information**: Verified AI vendors and solution providers
+Knowledge sources (internal only):
+1) AI Solutions (with department, industry, category, pricing, use cases, company)
+2) Company information for vendors
 
-**Key Capabilities:**
-- Find solutions by department (e.g., Healthcare, Finance, Marketing, etc.)
-- Match solutions by industry (e.g., Healthcare, E-commerce, Manufacturing, etc.)
-- Search by solution category (e.g., Chatbots, Analytics, Computer Vision, etc.)
-- Provide specific solution recommendations with company details
-- Explain solution features, pricing, and implementation details
+Working principles:
+- First, understand intent before recommending. Ask targeted, concise clarifying questions if context is missing (e.g., care setting, data availability, integration constraints, compliance requirements like HIPAA, urgency, budget range).
+- Prioritize healthcare use cases (clinical decision support, medical imaging, patient triage, RCM, NLP for clinical notes, care coordination, quality/safety, operations). If the request is not healthcare, politely ask if they want healthcare-focused recommendations or broader options.
+- Be precise, neutral, and non-promotional. No hype words. Cite concrete capabilities, data needs, integration touchpoints (EHR/PACS/HIS), and typical implementation considerations.
+- When recommending, list 2–5 options max, each with: use case alignment, required data/integration, regulatory considerations, indicative pricing if available, and vendor/company name from our DB.
 
-**Response Guidelines:**
-- ONLY recommend solutions that are in our database
-- Focus on the actual solutions available in our system
-- Mention the department/industry of each solution
-- Provide specific company names and solution details
-- Be helpful, accurate, and professional
-- Ask clarifying questions about department or industry if needed
+Response rules:
+- ONLY recommend solutions that are in our database. Do not invent.
+- If no good matches exist, state that, then ask 2–3 clarifying questions to refine the search or offer to perform an internet search upon explicit user consent.
+- Keep answers structured and skimmable. Lead with the user’s objective, then tailored options, then next steps.
 
-**Important:** Always base your responses ONLY on the solutions provided from our database. If no matching solutions are found, explain what departments/industries we do have solutions for.
-
-Remember: You're here to help users find the right AI solutions from our curated database.`;
+Always base answers solely on our database context appended below.`;
   }
 
   /**
@@ -61,6 +55,9 @@ Remember: You're here to help users find the right AI solutions from our curated
    */
   async searchContext(userMessage) {
     const searchTerms = this.extractSearchTerms(userMessage);
+    const lowerMessage = String(userMessage || '').toLowerCase();
+    const isHealthcareIntent = /health|medical|clinic|hospital|clinical|patient|imaging|radiology|pacs|ehr|emr|telemedicine/.test(lowerMessage);
+    const imagingKeywords = ['medical imaging','imaging','radiology','x-ray','ct','mri','ultrasound','pacs','dicom','computer vision'];
     const context = {
       solutions: [],
       companies: [],
@@ -75,41 +72,91 @@ Remember: You're here to help users find the right AI solutions from our curated
       
       // If we have specific keywords, use them for precise matching
       if (searchTerms.solutionKeywords.length > 0 || searchTerms.industryKeywords.length > 0) {
+        const keywordRegex = new RegExp((searchTerms.solutionKeywords.join('|') || '.*'), 'i');
+        const industryRegex = new RegExp((searchTerms.industryKeywords.join('|') || '.*'), 'i');
+        const imagingRegex = new RegExp(imagingKeywords.join('|'), 'i');
         solutionQuery = {
-          $or: [
-            // Primary matches - title and short description (highest priority)
-            { title: { $regex: searchTerms.solutionKeywords.join('|'), $options: 'i' } },
-            { shortDescription: { $regex: searchTerms.solutionKeywords.join('|'), $options: 'i' } },
-            
-            // Secondary matches - category and industry
-            { category: { $regex: searchTerms.solutionKeywords.join('|'), $options: 'i' } },
-            { industry: { $regex: searchTerms.industryKeywords.join('|'), $options: 'i' } },
-            
-            // Tertiary matches - tags and use cases
-            { tags: { $in: searchTerms.solutionKeywords } },
-            { useCases: { $regex: searchTerms.solutionKeywords.join('|'), $options: 'i' } }
+          $and: [
+            // If healthcare intent, restrict to healthcare industry
+            ...(isHealthcareIntent ? [{ industry: { $regex: /healthcare/i } }] : []),
+            {
+              $or: [
+                { title: { $regex: keywordRegex } },
+                { shortDescription: { $regex: keywordRegex } },
+                { category: { $regex: keywordRegex } },
+                { industry: { $regex: industryRegex } },
+                { tags: { $in: searchTerms.solutionKeywords } },
+                { useCases: { $regex: keywordRegex } },
+                // Imaging-specific boost
+                ...(imagingKeywords.some(k => lowerMessage.includes(k)) ? [
+                  { category: { $regex: imagingRegex } },
+                  { title: { $regex: imagingRegex } },
+                  { shortDescription: { $regex: imagingRegex } }
+                ] : [])
+              ]
+            }
           ]
         };
       } else {
         // If no specific keywords found, do a more targeted search with user's words
         const words = userMessage.split(' ').filter(word => word.length > 3);
         if (words.length > 0) {
+          const wordRegex = new RegExp(words.join('|'), 'i');
           solutionQuery = {
-            $or: [
-              { title: { $regex: words.join('|'), $options: 'i' } },
-              { shortDescription: { $regex: words.join('|'), $options: 'i' } },
-              { category: { $regex: words.join('|'), $options: 'i' } },
-              { industry: { $regex: words.join('|'), $options: 'i' } }
+            $and: [
+              ...(isHealthcareIntent ? [{ industry: { $regex: /healthcare/i } }] : []),
+              {
+                $or: [
+                  { title: { $regex: wordRegex } },
+                  { shortDescription: { $regex: wordRegex } },
+                  { category: { $regex: wordRegex } },
+                  { industry: { $regex: wordRegex } }
+                ]
+              }
             ]
           };
         }
       }
       
       // Get solutions with company information - limit to most relevant ones
-      context.solutions = await Solution.find(solutionQuery)
+      let solutions = await Solution.find(solutionQuery)
         .populate('companyId', 'name website industry')
-        .limit(5) // Show only top 5 most relevant solutions
+        .limit(12) // fetch more to score and then cut down
         .lean();
+
+      // Relevance scoring
+      const scoreFor = (sol) => {
+        let s = 0;
+        const text = `${sol.title} ${sol.shortDescription || ''} ${sol.description || ''} ${sol.category} ${(sol.useCases||[]).join(' ')} ${(sol.tags||[]).join(' ')}`.toLowerCase();
+        if (isHealthcareIntent) {
+          if ((sol.industry || '').toLowerCase().includes('health')) s += 3; else s -= 2;
+        }
+        // imaging boost if message asks for imaging
+        if (imagingKeywords.some(k => lowerMessage.includes(k))) {
+          if (/imaging|radiology|pacs|dicom|computer vision/i.test(sol.category || '')) s += 3;
+          if (imagingKeywords.some(k => text.includes(k))) s += 2;
+        }
+        // keyword overlap
+        (searchTerms.solutionKeywords || []).forEach(k => { if (k && text.includes(k)) s += 1; });
+        return s;
+      };
+
+      solutions = solutions
+        .map(sol => ({ sol, score: scoreFor(sol) }))
+        .filter(({ score }) => score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(({ sol }) => sol);
+
+      // Fallback: if nothing after filter but healthcare intent, show healthcare-only items if available
+      if (solutions.length === 0 && isHealthcareIntent) {
+        solutions = await Solution.find({ industry: { $regex: /healthcare/i } })
+          .populate('companyId', 'name website industry')
+          .limit(5)
+          .lean();
+      }
+
+      context.solutions = solutions;
 
       // Only get companies that are related to the found solutions
       if (context.solutions.length > 0) {
@@ -256,7 +303,10 @@ Remember: You're here to help users find the right AI solutions from our curated
       const hasRelevantQueries = context.queries.length > 0;
       const hasRelevantBlogs = context.blogs.length > 0;
       
-      // Build enhanced system prompt based on search results
+      // Determine if we are ready to recommend (intent-first gating)
+      const readiness = this.shouldRecommend(message, conversationHistory);
+
+      // Build enhanced system prompt based on search results and readiness
       let enhancedSystemPrompt = this.systemPrompt;
       
       if (!hasRelevantSolutions && !hasRelevantCompanies && !hasRelevantQueries && !hasRelevantBlogs) {
@@ -283,9 +333,12 @@ Would you like me to:
 Let me know which option you'd prefer, and I'll be happy to help!"
 
 **Remember:** Always be helpful and offer multiple options when no system matches are found.`;
-      } else {
-        // We have relevant matches - use them
+      } else if (readiness.isReady) {
+        // We have relevant matches and intent appears clear - provide detailed context
         enhancedSystemPrompt += contextText;
+      } else {
+        // We have matches but user intent is not yet clear. Do NOT bias with full lists.
+        enhancedSystemPrompt += `\n\nBefore recommending, first confirm the user's healthcare setting, primary use case, and key constraints. Keep questions concise (max 3).`;
       }
       
       // Build messages array for OpenAI
@@ -339,20 +392,22 @@ Let me know which option you'd prefer, and I'll be happy to help!"
           hasSystemMatches: hasRelevantSolutions || hasRelevantCompanies || hasRelevantQueries || hasRelevantBlogs,
           needsInternetSearch: !hasRelevantSolutions && !hasRelevantCompanies && !hasRelevantQueries && !hasRelevantBlogs
         },
-        // Include solution cards for frontend to render
-        solutionCards: context.solutions.map(solution => ({
-          id: solution._id,
-          title: solution.title,
-          company: solution.companyId?.name || 'Unknown Company',
-          website: solution.companyId?.website || '',
-          industry: solution.industry,
-          category: solution.category,
-          shortDescription: solution.shortDescription || solution.description,
-          pricing: solution.pricing?.model || 'Contact for pricing',
-          price: solution.pricing?.price?.amount || null,
-          logo: solution.companyId?.logo || null,
-          isPremium: solution.isPremium || false // Add premium flag
-        }))
+        // Include solution cards only when intent is sufficiently clear
+        solutionCards: readiness.isReady
+          ? context.solutions.map(solution => ({
+              id: solution._id,
+              title: solution.title,
+              company: solution.companyId?.name || 'Unknown Company',
+              website: solution.companyId?.website || '',
+              industry: solution.industry,
+              category: solution.category,
+              shortDescription: solution.shortDescription || solution.description,
+              pricing: solution.pricing?.model || 'Contact for pricing',
+              price: solution.pricing?.price?.amount || null,
+              logo: solution.companyId?.logo || null,
+              isPremium: solution.isPremium || false
+            }))
+          : []
       };
       
     } catch (error) {
@@ -364,6 +419,34 @@ Let me know which option you'd prefer, and I'll be happy to help!"
         sessionId: sessionId
       };
     }
+  }
+
+  /**
+   * Heuristic to decide whether the user's intent is clear enough to recommend solutions
+   * We require at least one care setting keyword and one use-case keyword across recent messages
+   */
+  shouldRecommend(latestMessage, conversationHistory) {
+    const recentTexts = [
+      ...conversationHistory.slice(-6).map(m => (m && m.content ? String(m.content) : '')),
+      String(latestMessage || '')
+    ].join(' ').toLowerCase();
+
+    const settingKeywords = [
+      'hospital','clinic','telehealth','inpatient','outpatient','radiology','pacs','ehr','emr','epic','cerner','meditech','oncology','cardiology','ed','er','icu'
+    ];
+    const useCaseKeywords = [
+      'imaging','nlp','clinical notes','triage','rcm','revenue cycle','billing','coding','decision support','cds','risk','readmission','scheduling','claims','prior auth','prior authorization','care coordination','patient flow','denials'
+    ];
+    const constraintKeywords = [
+      'hipaa','privacy','security','integration','interoperability','timeline','budget','pilots','compliance'
+    ];
+
+    const hasSetting = settingKeywords.some(k => recentTexts.includes(k));
+    const hasUseCase = useCaseKeywords.some(k => recentTexts.includes(k));
+    const hasConstraint = constraintKeywords.some(k => recentTexts.includes(k));
+
+    const isReady = hasSetting && hasUseCase; // constraints are helpful but not required
+    return { isReady, signals: { hasSetting, hasUseCase, hasConstraint } };
   }
 
   /**

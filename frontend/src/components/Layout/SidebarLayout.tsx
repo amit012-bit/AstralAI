@@ -131,6 +131,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({
             onAdvancedSearch={onAdvancedSearch}
             currentFilters={currentFilters}
             pageType={pageType}
+            leftOffset={isCollapsed ? 64 : 240}
           />
         )}
         

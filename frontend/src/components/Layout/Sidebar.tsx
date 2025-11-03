@@ -23,8 +23,8 @@ import {
   TagIcon,
   BookOpenIcon,
   InformationCircleIcon,
-  ChevronDownIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  ChevronLeftIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -159,32 +159,39 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
               </AnimatePresence>
             </Link>
             
-            {/* Collapse/Expand Button */}
-            <button
-              onClick={onToggle}
-              className="p-1.5 rounded-md hover:bg-gray-800 transition-colors"
-            >
-              {isCollapsed ? (
-                <ChevronRightIcon className="w-4 h-4 text-gray-400" />
-              ) : (
-                <ChevronDownIcon className="w-4 h-4 text-gray-400 rotate-90" />
-              )}
-            </button>
           </div>
         </div>
 
 
+        {/* Center Toggle Button */}
+        <div className="absolute top-1/2 right-2 -translate-y-1/2">
+          <motion.button
+            onClick={onToggle}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-2 rounded-md bg-gray-800 hover:bg-gray-700 text-gray-300 shadow-lg border border-gray-700"
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? (
+              <ChevronRightIcon className="w-5 h-5" />
+            ) : (
+              <ChevronLeftIcon className="w-5 h-5" />
+            )}
+          </motion.button>
+        </div>
+
         {/* Navigation - Classic Compact */}
-        <nav className="flex-1 p-3 space-y-1 overflow-hidden">
+        <nav className="flex-1 p-3 space-y-1 overflow-visible">
           {visibleNavigation.map((item, index) => (
             <div key={item.name}>
               <div className="relative">
-                <Link href={item.href}>
+                <Link href={item.href} className="block">
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`group relative flex items-center justify-between px-3 py-2 rounded-md transition-all duration-200 ${
+                    className={`group relative flex items-center w-full ${isCollapsed ? 'justify-center' : 'justify-between'} px-3 py-2 rounded-md transition-all duration-200 ${
                       router.pathname === item.href
                         ? 'bg-blue-600 text-white'
                         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
@@ -279,20 +286,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
           )}
         </nav>
 
-        {/* Expand Arrow - Shows when collapsed */}
-        {isCollapsed && (
-          <div className="px-3 pb-3">
-            <motion.button
-              onClick={onToggle}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="w-full flex items-center justify-center p-2 rounded-md bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
-              title="Expand sidebar"
-            >
-              <ChevronRightIcon className="w-5 h-5" />
-            </motion.button>
-          </div>
-        )}
+        
 
         {/* User Section - Classic Compact Design */}
         {isAuthenticated ? (
