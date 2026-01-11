@@ -81,6 +81,19 @@ const userSchema = new mongoose.Schema({
     trim: true
   },
   
+  // Profile completion flags (for solutions-hub-main compatibility)
+  hasInstitutionProfile: {
+    type: Boolean,
+    default: false
+  },
+  hasVendorProfile: {
+    type: Boolean,
+    default: false
+  },
+  profileCompletedAt: {
+    type: Date
+  },
+  
   // Account status and verification
   isEmailVerified: {
     type: Boolean,

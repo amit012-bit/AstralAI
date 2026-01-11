@@ -111,9 +111,9 @@ const FEATURES = [
 const AboutPage: React.FC = () => {
   return (
     <Layout>
-      <div className="bg-gray-800">
+      <div className="bg-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <motion.div
@@ -156,7 +156,7 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Mission Section */}
-      <div className="py-20 bg-gray-900">
+      <div className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -165,34 +165,34 @@ const AboutPage: React.FC = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                 Our Mission
               </h2>
-              <p className="text-lg text-gray-300 mb-6">
+              <p className="text-lg text-gray-600 mb-6">
                 At AstralAI, we believe that artificial intelligence has the power to transform 
                 businesses and solve complex challenges. However, finding the right AI solution can be 
                 overwhelming with thousands of options available.
               </p>
-              <p className="text-lg text-gray-300 mb-8">
+              <p className="text-lg text-gray-600 mb-8">
                 We've created a comprehensive platform that connects businesses with verified AI vendors, 
                 making it easy to discover, evaluate, and implement the perfect AI solution for your specific needs.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <CheckIcon className="h-6 w-6 text-green-500" />
-                  <span className="text-gray-300 font-medium">Verified AI solution vendors</span>
+                  <span className="text-gray-700 font-medium">Verified AI solution vendors</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckIcon className="h-6 w-6 text-green-500" />
-                  <span className="text-gray-300 font-medium">Intelligent matching algorithms</span>
+                  <span className="text-gray-700 font-medium">Intelligent matching algorithms</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckIcon className="h-6 w-6 text-green-500" />
-                  <span className="text-gray-300 font-medium">Expert guidance and support</span>
+                  <span className="text-gray-700 font-medium">Expert guidance and support</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CheckIcon className="h-6 w-6 text-green-500" />
-                  <span className="text-gray-300 font-medium">Secure and transparent platform</span>
+                  <span className="text-gray-700 font-medium">Secure and transparent platform</span>
                 </div>
               </div>
             </motion.div>
@@ -230,7 +230,7 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* Features Section */}
-      <div className="py-20 bg-gray-800">
+      <div className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -239,10 +239,10 @@ const AboutPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Why Choose AstralAI?
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We provide everything you need to find, evaluate, and implement the perfect AI solution for your business.
             </p>
           </motion.div>
@@ -256,15 +256,15 @@ const AboutPage: React.FC = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
-                className="bg-gray-900 p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300"
               >
-                <div className="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-                  <feature.icon className="h-6 w-6 text-blue-400" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4 border border-blue-100">
+                  <feature.icon className="h-6 w-6 text-blue-500" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-300">
+                <p className="text-gray-600">
                   {feature.description}
                 </p>
               </motion.div>

@@ -142,7 +142,7 @@ const CategoriesPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="bg-gray-800">
+      <div className="bg-white">
       {/* Categories Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -153,7 +153,7 @@ const CategoriesPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -8 }}
-              className="bg-gray-900 rounded-xl shadow-sm border border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
               onClick={() => handleCategoryClick(category.id)}
             >
               {/* Category Header */}
@@ -161,10 +161,10 @@ const CategoriesPage: React.FC = () => {
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="text-4xl">{category.icon}</div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-500 transition-colors">
                       {category.name}
                     </h3>
-                    <p className="text-sm text-gray-300 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       {category.description}
                     </p>
                   </div>
@@ -173,28 +173,28 @@ const CategoriesPage: React.FC = () => {
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-4 mb-4">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-400">
+                    <div className="text-lg font-bold text-blue-500">
                       {category.stats.solutions}
                     </div>
-                    <div className="text-xs text-gray-400">Solutions</div>
+                    <div className="text-xs text-gray-500">Solutions</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-400">
+                    <div className="text-lg font-bold text-blue-500">
                       {category.stats.companies}
                     </div>
-                    <div className="text-xs text-gray-400">Companies</div>
+                    <div className="text-xs text-gray-500">Companies</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-400">
+                    <div className="text-lg font-bold text-blue-500">
                       {category.stats.avgRating}
                     </div>
-                    <div className="text-xs text-gray-400">Avg Rating</div>
+                    <div className="text-xs text-gray-500">Avg Rating</div>
                   </div>
                 </div>
 
                 {/* Popular Tags */}
                 <div className="mb-4">
-                  <div className="text-sm font-medium text-gray-300 mb-2">Popular Tags</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">Popular Tags</div>
                   <div className="flex flex-wrap gap-1">
                     {category.popularTags.slice(0, 3).map((tag) => (
                       <button
@@ -203,13 +203,13 @@ const CategoriesPage: React.FC = () => {
                           e.stopPropagation();
                           handleTagClick(tag);
                         }}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-900/30 text-blue-300 hover:bg-blue-800/30 transition-colors"
+                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors border border-blue-200"
                       >
                         {tag}
                       </button>
                     ))}
                     {category.popularTags.length > 3 && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
                         +{category.popularTags.length - 3} more
                       </span>
                     )}
@@ -218,18 +218,18 @@ const CategoriesPage: React.FC = () => {
 
                 {/* Industries */}
                 <div className="mb-4">
-                  <div className="text-sm font-medium text-gray-300 mb-2">Popular Industries</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">Popular Industries</div>
                   <div className="flex flex-wrap gap-1">
                     {category.industries.slice(0, 2).map((industry) => (
                       <span
                         key={industry}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-900/30 text-green-300"
+                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-50 text-green-600 border border-green-200"
                       >
                         {industry}
                       </span>
                     ))}
                     {category.industries.length > 2 && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
                         +{category.industries.length - 2} more
                       </span>
                     )}
@@ -239,7 +239,7 @@ const CategoriesPage: React.FC = () => {
                 {/* Featured Solutions Preview */}
                 {solutionsByCategory[category.id]?.length > 0 && (
                   <div className="mb-4">
-                    <div className="text-sm font-medium text-gray-300 mb-2">Featured Solutions</div>
+                    <div className="text-sm font-medium text-gray-700 mb-2">Featured Solutions</div>
                     <div className="space-y-2">
                       {solutionsByCategory[category.id].slice(0, 2).map((solution: any) => (
                         <div
@@ -248,16 +248,16 @@ const CategoriesPage: React.FC = () => {
                             e.stopPropagation();
                             router.push(`/solutions/${solution._id}`);
                           }}
-                          className="flex items-center space-x-2 p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors cursor-pointer"
+                          className="flex items-center space-x-2 p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200"
                         >
-                          <SparklesIcon className="h-4 w-4 text-blue-400" />
-                          <span className="text-sm font-medium text-white truncate">
+                          <SparklesIcon className="h-4 w-4 text-blue-500" />
+                          <span className="text-sm font-medium text-gray-900 truncate">
                             {solution.title}
                           </span>
                           {solution.rating && (
                             <div className="flex items-center space-x-1 ml-auto">
                               <StarIcon className="h-3 w-3 text-yellow-400 fill-current" />
-                              <span className="text-xs text-gray-400">
+                              <span className="text-xs text-gray-500">
                                 {solution.rating.average.toFixed(1)}
                               </span>
                             </div>
@@ -270,10 +270,10 @@ const CategoriesPage: React.FC = () => {
 
                 {/* View Solutions Button */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm text-gray-500">
                     {category.stats.solutions} solutions available
                   </span>
-                  <ArrowRightIcon className="h-5 w-5 text-blue-400 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRightIcon className="h-5 w-5 text-blue-500 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </motion.div>
@@ -282,13 +282,13 @@ const CategoriesPage: React.FC = () => {
       </div>
 
       {/* Call to Action */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white mb-4">
               Can't Find What You're Looking For?
             </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-blue-50 mb-8 max-w-2xl mx-auto">
               Browse all AI solutions or post a query to get personalized recommendations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -296,7 +296,7 @@ const CategoriesPage: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center space-x-2 bg-white text-blue-700 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-50 transition-colors shadow-lg"
+                  className="inline-flex items-center space-x-2 bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-50 transition-colors shadow-lg"
                 >
                   <span>Browse All Solutions</span>
                   <ArrowRightIcon className="h-5 w-5" />
@@ -306,7 +306,7 @@ const CategoriesPage: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center space-x-2 bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-700 transition-colors"
+                  className="inline-flex items-center space-x-2 bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors"
                 >
                   <span>Post a Query</span>
                   <SparklesIcon className="h-5 w-5" />

@@ -260,12 +260,12 @@ const BlogPage: React.FC = () => {
       currentFilters={filters}
       pageType="blog"
     >
-      <div className="bg-gray-800">
+      <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Toolbar */}
-            <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-4 mb-6">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-300">
+                <div className="text-sm text-gray-600">
                   Showing <span className="font-medium">{filteredPosts.length}</span> blog posts
                 </div>
                 <div className="flex items-center space-x-2">
@@ -273,8 +273,8 @@ const BlogPage: React.FC = () => {
                     onClick={() => handleFilterChange('viewMode', 'grid')}
                     className={`p-2 rounded-md ${
                       filters.viewMode === 'grid'
-                        ? 'bg-blue-900/30 text-blue-400'
-                        : 'text-gray-400 hover:text-gray-300'
+                        ? 'bg-blue-50 text-blue-500'
+                        : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
                     <FunnelIcon className="h-5 w-5" />
@@ -283,8 +283,8 @@ const BlogPage: React.FC = () => {
                     onClick={() => handleFilterChange('viewMode', 'list')}
                     className={`p-2 rounded-md ${
                       filters.viewMode === 'list'
-                        ? 'bg-blue-900/30 text-blue-400'
-                        : 'text-gray-400 hover:text-gray-300'
+                        ? 'bg-blue-50 text-blue-500'
+                        : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
                     <BookOpenIcon className="h-5 w-5" />
@@ -298,7 +298,7 @@ const BlogPage: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gray-900 rounded-xl shadow-sm border border-gray-700 overflow-hidden mb-8 cursor-pointer"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8 cursor-pointer"
                 onClick={() => handlePostClick(filteredPosts[0].slug)}
               >
                 <div className="relative h-64 md:h-80">
@@ -320,8 +320,8 @@ const BlogPage: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between text-sm text-gray-400">
+                <div className="p-6 bg-white">
+                  <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
                         <img
@@ -329,7 +329,7 @@ const BlogPage: React.FC = () => {
                           alt={filteredPosts[0].authorName}
                           className="w-6 h-6 rounded-full"
                         />
-                        <span>{filteredPosts[0].authorName}</span>
+                        <span className="text-gray-700">{filteredPosts[0].authorName}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <CalendarIcon className="h-4 w-4" />

@@ -23,13 +23,13 @@ const Footer: React.FC = () => {
       { name: 'Industry Solutions', href: '/industries' },
     ],
     company: [
-      { name: 'About Us', href: '/about' },
+      // { name: 'About Us', href: '/about' }, // Hidden for now
       { name: 'Our Team', href: '/team' },
       { name: 'Careers', href: '/careers' },
       { name: 'Contact', href: '/contact' },
     ],
     resources: [
-      { name: 'Blog', href: '/blog' },
+      // { name: 'Blog', href: '/blog' }, // Hidden for now
       { name: 'Documentation', href: '/docs' },
       { name: 'Help Center', href: '/help' },
       { name: 'API Reference', href: '/api' },

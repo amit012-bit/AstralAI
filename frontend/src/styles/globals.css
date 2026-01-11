@@ -71,6 +71,16 @@
   ::-moz-selection {
     @apply bg-primary-200 text-primary-900;
   }
+
+  /* When the sidebar is collapsed, let content containers stretch full width */
+  body[data-sidebar-collapsed='true'] main .max-w-7xl {
+    max-width: 100% !important;
+  }
+
+  body[data-sidebar-collapsed='true'] main .mx-auto {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 /* Component Styles */
@@ -467,5 +477,39 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Solutions Hub Grid - Responsive */
+@media (max-width: 640px) {
+  .solutions-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0.75rem !important;
+    padding: 1rem !important;
+  }
+  .solutions-grid > * {
+    grid-column: span 4 !important;
+    grid-row: span 1 !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .solutions-grid {
+    grid-template-columns: repeat(8, 1fr) !important;
+    gap: 0.875rem !important;
+  }
+  .solutions-grid > *[data-cols="2"],
+  .solutions-grid > *[data-cols="3"] {
+    grid-column: span 4 !important;
+  }
+  .solutions-grid > *[data-cols="4"],
+  .solutions-grid > *[data-cols="5"] {
+    grid-column: span 8 !important;
+  }
+  .solutions-grid > *[data-cols="6"],
+  .solutions-grid > *[data-cols="7"],
+  .solutions-grid > *[data-cols="8"],
+  .solutions-grid > *[data-cols="12"] {
+    grid-column: span 8 !important;
   }
 }

@@ -1,0 +1,60 @@
+Extract the following information from the website content about an AI solution/product and return it as JSON format:
+
+{{WEBSITE_CONTENT}}
+
+Please extract and structure the following information:
+
+1. **Basic Information:**
+   - title: The name/title of the solution/product
+   - shortDescription: A brief description (under 200 characters)
+   - description: Detailed description of what the solution does, its key features, and benefits
+
+2. **Categorization:**
+   - category: Main category (e.g., "Machine Learning", "Natural Language Processing", "Computer Vision", "Predictive Analytics", "Chatbots", "Automation", "Data Processing")
+   - industry: Primary industry (e.g., "Healthcare", "Finance", "Education", "Retail", "Manufacturing")
+   - subcategory: Optional subcategory if applicable
+   - tags: Array of relevant tags/keywords (e.g., ["AI", "automation", "healthcare", "NLP"])
+
+3. **Features:**
+   - features: Array of key features, each with:
+     - name: Feature name/title
+     - description: Feature description
+     - icon: Optional icon name (can be empty string)
+
+4. **Pricing:**
+   - pricing: Object with:
+     - model: Pricing model ("free", "freemium", "subscription", "one-time", "custom", "contact")
+     - price: Numeric price if available (default 0)
+     - currency: Currency code (default "USD")
+     - billingCycle: Billing cycle ("monthly", "yearly", "one-time")
+     - customPricing: Object with available (boolean) and description (string)
+
+5. **Deployment:**
+   - deployment: Object with:
+     - type: Deployment type ("cloud", "on-premise", "hybrid", "saas", "api")
+     - time: Implementation time if mentioned
+     - description: Deployment description
+     - complexity: Complexity level if mentioned
+
+6. **Technical Details:**
+   - capabilities: Array of capabilities/functionalities
+   - technologies: Array of technologies used (e.g., ["Python", "TensorFlow", "AWS"])
+   - integrationRequirements: Description of integration requirements
+
+7. **Contact Information:**
+   - email: Contact email if available
+   - phone: Contact phone if available
+   - address: Company address if available
+   - demoUrl: Demo URL if available
+   - documentationUrl: Documentation URL if available
+
+8. **Additional Information:**
+   - valuePropositions: Array of value propositions/benefits
+   - useCases: Array of use cases
+   - implementationTime: Implementation time if mentioned
+
+**Important Notes:**
+- Return ONLY valid JSON
+- If information is not available, use empty strings for strings, empty arrays for arrays, and appropriate defaults for objects
+- Extract as much information as possible, but don't make up information that doesn't exist
+- Focus on accurate extraction rather than filling in missing fields

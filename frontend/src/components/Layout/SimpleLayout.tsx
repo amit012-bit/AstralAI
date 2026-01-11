@@ -6,7 +6,7 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import FloatingChatButton from '../Chat/FloatingChatButton';
+// import FloatingChatButton from '../Chat/FloatingChatButton'; // Hidden for now
 
 interface SimpleLayoutProps {
   children: React.ReactNode;
@@ -20,7 +20,8 @@ const SimpleLayout: React.FC<SimpleLayoutProps> = ({ children }) => {
         {children}
       </main>
       <Footer />
-      <FloatingChatButton />
+      {/* Floating AI Agent Button - Hidden for now */}
+      {/* <FloatingChatButton /> */}
     </div>
   );
 };

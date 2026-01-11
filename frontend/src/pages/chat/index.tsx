@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 import { 
@@ -17,7 +18,9 @@ import AIAvatar from '@/components/Chat/AIAvatar';
 import Layout from '@/components/Layout/Layout';
 
 const ChatPage: React.FC = () => {
+  const router = useRouter();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const initialQuery = router.query.q as string | undefined;
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -65,6 +68,7 @@ const ChatPage: React.FC = () => {
               <ChatKit 
                 isFullscreen={isFullscreen}
                 onToggleFullscreen={toggleFullscreen}
+                initialQuery={initialQuery}
               />
             </div>
           </motion.div>

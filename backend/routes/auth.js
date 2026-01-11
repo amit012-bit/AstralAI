@@ -16,7 +16,9 @@ const {
   logout,
   deleteAccount,
   verifyEmail,
-  getAllUsers
+  getAllUsers,
+  getUserData,
+  updateUserRole
 } = require('../controllers/authController');
 
 const { authenticate, authorize } = require('../middleware/auth');

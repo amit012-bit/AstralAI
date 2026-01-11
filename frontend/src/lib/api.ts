@@ -338,6 +338,140 @@ export const queriesApi = {
   },
 };
 
+// Institution API functions (for solutions-hub-main compatibility)
+export const institutionApi = {
+  // Get institution profile
+  getInstitution: async () => {
+    const response = await api.get<ApiResponse>('/institution');
+    return response.data;
+  },
+
+  // Get institution by user ID
+  getInstitutionByUserId: async (userId: string) => {
+    const response = await api.get<ApiResponse>(`/institution/${userId}`);
+    return response.data;
+  },
+
+  // Create or update institution profile
+  createOrUpdateInstitution: async (data: any) => {
+    const response = await api.post<ApiResponse>('/institution', data);
+    return response.data;
+  },
+};
+
+// Vendor API functions (for solutions-hub-main compatibility)
+export const vendorApi = {
+  // Get vendor profile
+  getVendor: async () => {
+    const response = await api.get<ApiResponse>('/vendor');
+    return response.data;
+  },
+
+  // Get vendor by user ID
+  getVendorByUserId: async (userId: string) => {
+    const response = await api.get<ApiResponse>(`/vendor/${userId}`);
+    return response.data;
+  },
+
+  // Create or update vendor profile
+  createOrUpdateVendor: async (data: any) => {
+    const response = await api.post<ApiResponse>('/vendor', data);
+    return response.data;
+  },
+};
+
+// User API functions (for solutions-hub-main compatibility)
+export const userApi = {
+  // Get user data with profile flags
+  getUserData: async () => {
+    const response = await api.get<ApiResponse>('/user');
+    return response.data;
+  },
+
+  // Update user role
+  updateUserRole: async (role: 'buyer' | 'seller') => {
+    const response = await api.post<ApiResponse>('/user', { role });
+    return response.data;
+  },
+};
+
+// Automation API functions
+export const automationApi = {
+  // Parse vendor website (extracts vendor info + multiple products)
+  parseVendorWebsite: async (url: string) => {
+    const response = await api.post<ApiResponse>('/automation/vendor/parse-website', { url }, {
+      timeout: 120000, // 2 minutes - scraping + 5 AI extractions can take time
+    });
+    return response.data;
+  },
+
+  // Parse solution website (legacy - for single solution parsing)
+  parseSolutionWebsite: async (url: string) => {
+    const response = await api.post<ApiResponse>('/automation/solutions/parse-website', { url }, {
+      timeout: 60000, // 1 minute - scraping + AI extraction
+    });
+    return response.data;
+  },
+};
+
+// Proposals API functions
+export const proposalsApi = {
+  // Get all proposals with filtering
+  getProposals: async (params: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    industry?: string;
+    status?: string;
+    creatorType?: string;
+    createdBy?: string;
+  } = {}) => {
+    const response = await api.get<PaginatedResponse<any>>('/proposals', { params });
+    return response.data;
+  },
+
+  // Get single proposal
+  getProposal: async (id: string) => {
+    const response = await api.get<ApiResponse>(`/proposals/${id}`);
+    return response.data;
+  },
+
+  // Create new proposal
+  createProposal: async (proposalData: any) => {
+    const response = await api.post<ApiResponse>('/proposals', proposalData);
+    return response.data;
+  },
+
+  // Update proposal
+  updateProposal: async (id: string, proposalData: any) => {
+    const response = await api.put<ApiResponse>(`/proposals/${id}`, proposalData);
+    return response.data;
+  },
+
+  // Delete proposal
+  deleteProposal: async (id: string) => {
+    const response = await api.delete<ApiResponse>(`/proposals/${id}`);
+    return response.data;
+  },
+
+  // Add vendor response to proposal
+  addResponse: async (proposalId: string, responseData: {
+    solutionId?: string;
+    proposalText: string;
+    proposedPrice?: string;
+    proposedTimeline?: string;
+  }) => {
+    const response = await api.post<ApiResponse>(`/proposals/${proposalId}/responses`, responseData);
+    return response.data;
+  },
+
+  // Update response status (accept/reject)
+  updateResponseStatus: async (proposalId: string, responseId: string, status: 'accepted' | 'rejected' | 'pending') => {
+    const response = await api.put<ApiResponse>(`/proposals/${proposalId}/responses/${responseId}`, { status });
+    return response.data;
+  },
+};
+
 // Utility functions
 export const apiUtils = {
   // Set authentication token

@@ -18,6 +18,11 @@ const authRoutes = require('./routes/auth');
 const solutionRoutes = require('./routes/solutions');
 const queryRoutes = require('./routes/queries');
 const chatRoutes = require('./routes/chat');
+const institutionRoutes = require('./routes/institutions');
+const vendorRoutes = require('./routes/vendors');
+const userRoutes = require('./routes/user');
+const automationRoutes = require('./routes/automation');
+const proposalRoutes = require('./routes/proposals');
 
 // Initialize Express app
 const app = express();
@@ -90,6 +95,11 @@ app.use('/api/solutions', solutionRoutes);
 app.use('/api/queries', queryRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/companies', require('./routes/companies'));
+app.use('/api/institution', institutionRoutes);
+app.use('/api/vendor', vendorRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/automation', automationRoutes);
+app.use('/api/proposals', proposalRoutes);
 
 // API documentation endpoint
 app.get('/api', (req, res) => {

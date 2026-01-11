@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "seed": "node scripts/seed-data.js"
   },
   "keywords": [
     "ai",
@@ -33,6 +34,7 @@
     "mongoose": "^7.6.3",
     "multer": "^1.4.5-lts.1",
     "openai": "^6.2.0",
+    "puppeteer": "^24.34.0",
     "react-markdown": "^8.0.7",
     "remark-gfm": "^3.0.1",
     "uuid": "^13.0.0"

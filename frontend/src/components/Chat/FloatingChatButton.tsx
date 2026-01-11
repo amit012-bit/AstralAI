@@ -23,7 +23,7 @@ const FloatingChatButton: React.FC = () => {
     <>
       {/* Floating AI Agent Button */}
       <motion.div
-        className="fixed bottom-6 right-6 z-40"
+        className="fixed top-6 right-6 z-40"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 2, type: "spring", stiffness: 200 }}
@@ -115,11 +115,11 @@ const FloatingChatButton: React.FC = () => {
             
             {/* AI Agent Container */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.9, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              exit={{ opacity: 0, scale: 0.9, y: -20 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed bottom-24 right-6 w-96 h-[500px] bg-white rounded-xl shadow-2xl border border-gray-200 z-40 overflow-hidden"
+              className="fixed top-24 right-6 w-96 h-[500px] bg-white rounded-xl shadow-2xl border border-gray-200 z-40 overflow-hidden"
             >
               <ChatKit />
             </motion.div>

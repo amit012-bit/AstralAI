@@ -32,12 +32,14 @@ interface ChatKitProps {
   className?: string;
   isFullscreen?: boolean;
   onToggleFullscreen?: () => void;
+  initialQuery?: string;
 }
 
 const ChatKit: React.FC<ChatKitProps> = ({ 
   className = '', 
   isFullscreen = false,
-  onToggleFullscreen 
+  onToggleFullscreen,
+  initialQuery
 }) => {
   // Router for navigation
   const router = useRouter();
@@ -101,6 +103,69 @@ const ChatKit: React.FC<ChatKitProps> = ({
 
     initializeAIAgent();
   }, []);
+
+  // Auto-send initial query if provided (e.g., from home page search)
+  // Use a ref to track if we've already sent the initial query
+  const hasSentInitialQuery = useRef(false);
+  
+  useEffect(() => {
+    if (initialQuery && initialQuery.trim() && sessionId && messages.length > 0 && !isLoading && !hasSentInitialQuery.current) {
+      // Mark that we've sent the query to prevent duplicate sends
+      hasSentInitialQuery.current = true;
+      
+      // Wait a bit for the welcome message to render, then send the query
+      const timer = setTimeout(() => {
+        const userMessage: ChatMessage = {
+          role: 'user',
+          content: initialQuery.trim(),
+          timestamp: new Date().toISOString()
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+        setIsLoading(true);
+        setIsTyping(true);
+
+        chatApi.sendMessage(initialQuery.trim(), sessionId)
+          .then((response: ChatResponse) => {
+            if (response.success && response.data) {
+              const assistantMessage: ChatMessage = {
+                role: 'assistant',
+                content: response.data.response,
+                timestamp: response.data.timestamp,
+                solutionCards: response.data.solutionCards
+              };
+              
+              setMessages(prev => [...prev, assistantMessage]);
+              
+              if (response.data.context) {
+                const { solutionsFound, companiesFound, queriesFound, blogsFound } = response.data.context;
+                if (solutionsFound > 0 || companiesFound > 0 || queriesFound > 0 || blogsFound > 0) {
+                  toast.success(`Found ${solutionsFound} solutions, ${companiesFound} companies, ${queriesFound} queries, ${blogsFound} articles`);
+                }
+              }
+            }
+          })
+          .catch((error: any) => {
+            console.error('Error sending initial query:', error);
+            const errorMessage: ChatMessage = {
+              role: 'assistant',
+              content: `I apologize, but I'm experiencing technical difficulties right now. Please try again in a moment. 
+
+**Error:** ${error.message}`,
+              timestamp: new Date().toISOString()
+            };
+            setMessages(prev => [...prev, errorMessage]);
+            toast.error('Failed to get AI response');
+          })
+          .finally(() => {
+            setIsLoading(false);
+            setIsTyping(false);
+          });
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [initialQuery, sessionId, messages.length, isLoading]);
 
   // Remove auto-scroll and auto-focus to prevent page jumping
   // Users can manually scroll and click to focus input when needed

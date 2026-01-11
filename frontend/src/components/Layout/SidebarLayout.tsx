@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { Bars3Icon, SparklesIcon } from '@heroicons/react/24/outline';
 import Sidebar from './Sidebar';
 import PageHeader from './PageHeader';
-import FloatingChatButton from '../Chat/FloatingChatButton';
+// import FloatingChatButton from '../Chat/FloatingChatButton'; // Hidden for now
 
 interface FilterState {
   search: string;
@@ -54,6 +54,9 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const EXPANDED_SIDEBAR_WIDTH = 208; // Slightly slimmer desktop width for expanded state
+  const COLLAPSED_SIDEBAR_WIDTH = 64; // Compact width for collapsed state that keeps icons readable
+  const sidebarWidth = isMobile ? 0 : (isCollapsed ? COLLAPSED_SIDEBAR_WIDTH : EXPANDED_SIDEBAR_WIDTH); // Centralized width value for consistent layout math
 
   useEffect(() => {
     const checkMobile = () => {
@@ -78,9 +81,26 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.dataset.sidebarCollapsed = isCollapsed ? 'true' : 'false';
+    }
+
+    return () => {
+      if (typeof document !== 'undefined') {
+        delete document.body.dataset.sidebarCollapsed;
+      }
+    };
+  }, [isCollapsed]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900">
-      <Sidebar isCollapsed={isCollapsed} onToggle={toggleSidebar} />
+    <div className="min-h-screen bg-white">
+      <Sidebar 
+        isCollapsed={isCollapsed} 
+        onToggle={toggleSidebar}
+        expandedWidth={EXPANDED_SIDEBAR_WIDTH}
+        collapsedWidth={COLLAPSED_SIDEBAR_WIDTH}
+      />
       
       {/* Mobile Overlay */}
       {isMobile && !isCollapsed && (
@@ -94,15 +114,16 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({
       <div 
         className="transition-all duration-300 min-h-screen relative z-10"
         style={{
-          marginLeft: isMobile ? '0' : isCollapsed ? '64px' : '240px'
+          // Keep content aligned with sidebar width for both expanded and collapsed states
+          marginLeft: `${sidebarWidth}px`
         }}
       >
         {/* Mobile Header */}
         {isMobile && (
-          <div className="md:hidden bg-gray-900 shadow-sm border-b border-gray-700 px-4 py-3 flex items-center justify-between">
+          <div className="md:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
             <button
               onClick={toggleSidebar}
-              className="p-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
             >
               <Bars3Icon className="w-6 h-6" />
             </button>
@@ -131,17 +152,19 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({
             onAdvancedSearch={onAdvancedSearch}
             currentFilters={currentFilters}
             pageType={pageType}
+            sidebarWidth={sidebarWidth}
+            isSidebarCollapsed={isCollapsed}
           />
         )}
         
         {/* Content */}
-        <main className={`min-h-screen overflow-y-auto bg-gradient-to-br from-gray-800 to-gray-900 ${!isMobile ? 'pt-20' : ''}`}>
+        <main className={`min-h-screen overflow-y-auto bg-white ${!isMobile ? 'pt-20' : ''}`}>
           {children}
         </main>
       </div>
       
-      {/* Floating AI Agent Button */}
-      <FloatingChatButton />
+      {/* Floating AI Agent Button - Hidden for now */}
+      {/* <FloatingChatButton /> */}
     </div>
   );
 };

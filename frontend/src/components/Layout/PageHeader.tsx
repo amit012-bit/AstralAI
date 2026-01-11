@@ -34,6 +34,8 @@ interface PageHeaderProps {
   onAdvancedSearch?: (filters: FilterState) => void;
   currentFilters?: FilterState;
   pageType?: 'solutions' | 'queries' | 'blog';
+  sidebarWidth?: number; // Allows the header to respect the current sidebar width for perfect alignment
+  isSidebarCollapsed?: boolean; // Indicates whether the sidebar is collapsed so we can expand content to full width
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
@@ -46,7 +48,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   additionalContent,
   onAdvancedSearch,
   currentFilters,
-  pageType
+  pageType,
+  sidebarWidth = 240,
+  isSidebarCollapsed = false
 }) => {
   const router = useRouter();
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
@@ -72,18 +76,19 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           // subtitle: 'Organized by Industry and Use Case',
           searchPlaceholder: 'Search categories...'
         };
-      case '/blog':
-        return {
-          title: 'AI Insights',
-          // subtitle: 'Latest Trends and Best Practices',
-          searchPlaceholder: 'Search blog posts...'
-        };
-      case '/about':
-        return {
-          title: 'About Us',
-          // subtitle: 'Connecting Businesses with AI Solutions',
-          searchPlaceholder: 'Search AI solutions...'
-        };
+      // Blog and About pages hidden for now
+      // case '/blog':
+      //   return {
+      //     title: 'AI Insights',
+      //     // subtitle: 'Latest Trends and Best Practices',
+      //     searchPlaceholder: 'Search blog posts...'
+      //   };
+      // case '/about':
+      //   return {
+      //     title: 'About Us',
+      //     // subtitle: 'Connecting Businesses with AI Solutions',
+      //     searchPlaceholder: 'Search AI solutions...'
+      //   };
       case '/vendors':
         return {
           title: '🏢 AI Vendors',
@@ -117,15 +122,26 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const finalSearchPlaceholder = searchPlaceholder || defaultContent.searchPlaceholder;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-700 shadow-sm h-20 flex items-center" style={{ marginLeft: '240px', width: 'calc(100% - 240px)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div
+      className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm h-20 flex items-center"
+      style={{
+        // Match header offset to current sidebar width so it always fits snugly against content
+        marginLeft: `${sidebarWidth}px`,
+        width: `calc(100% - ${sidebarWidth}px)`
+      }}
+    >
+      <div
+        className={`w-full px-4 sm:px-6 lg:px-8 ${
+          isSidebarCollapsed ? '' : 'max-w-7xl mx-auto'
+        }`}
+      >
         <div className="flex items-center justify-between">
           {/* Left Side - Page Title */}
           <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-semibold text-white">
+            <h1 className="text-xl font-semibold text-gray-900">
               {finalTitle}
             </h1>
-            <span className="text-sm text-blue-400 font-medium">
+            <span className="text-sm text-blue-500 font-medium">
               {finalSubtitle}
             </span>
             {additionalContent}
@@ -141,7 +157,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                   value={searchValue}
                   onChange={(e) => onSearchChange?.(e.target.value)}
                   placeholder={finalSearchPlaceholder}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               
@@ -149,7 +165,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               {onAdvancedSearch && currentFilters && pageType && (
                 <button
                   onClick={() => setIsAdvancedSearchOpen(true)}
-                  className="relative p-2.5 bg-gray-800 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 hover:border-gray-600 transition-all duration-200"
+                  className="relative p-2.5 bg-white border border-gray-300 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
                   title="Advanced Search"
                 >
                   <AdjustmentsHorizontalIcon className="h-5 w-5" />
@@ -165,7 +181,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                       (currentFilters.maxPrice && currentFilters.maxPrice < 10000);
                     
                     return hasActiveFilters ? (
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-gray-800" />
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white" />
                     ) : null;
                   })()}
                 </button>

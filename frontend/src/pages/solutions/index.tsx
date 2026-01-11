@@ -234,7 +234,7 @@ const SolutionsPage: React.FC = () => {
       currentFilters={filters}
       pageType="solutions"
     >
-      <div className="bg-gray-800 min-h-screen">
+      <div className="bg-white min-h-screen">
         {/* Scrollable Content */}
         <div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -262,9 +262,9 @@ const SolutionsPage: React.FC = () => {
               }
               
               return appliedFilters.length > 0 ? (
-                <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-4 mb-6">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-medium text-gray-300">Applied Filters</h3>
+                    <h3 className="text-sm font-medium text-gray-900">Applied Filters</h3>
                     <button
                       onClick={clearFilters}
                       className="text-xs text-blue-400 hover:text-blue-300 font-medium"
@@ -301,18 +301,18 @@ const SolutionsPage: React.FC = () => {
             })()}
 
             {/* Toolbar */}
-            <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-4 mb-6">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                 {/* Results Count and Sort */}
                 <div className="flex items-center space-x-4">
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-gray-700">
                     Showing <span className="font-medium">{solutions.length}</span> of{' '}
                     <span className="font-medium">{totalSolutions}</span> solutions
                   </div>
                   <select
                     value={filters.sort}
                     onChange={(e) => handleFilterChange('sort', e.target.value)}
-                    className="border border-gray-600 rounded-md px-3 py-1 text-sm bg-gray-800 text-white focus:ring-blue-500 focus:border-blue-500"
+                    className="border border-gray-300 rounded-md px-3 py-1 text-sm bg-white text-gray-900 focus:ring-blue-500 focus:border-blue-500"
                   >
                     {SORT_OPTIONS.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -392,7 +392,7 @@ const SolutionsPage: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         whileHover={{ y: -4, scale: 1.02 }}
-                        className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 cursor-pointer group"
+                        className="relative bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer group"
                         onClick={() => handleSolutionClick(solution._id)}
                       >
                         {/* Glowing background effect */}
@@ -443,9 +443,9 @@ const SolutionsPage: React.FC = () => {
                         </div>
 
                         {/* Card Content */}
-                        <div className="relative p-6 bg-gradient-to-br from-gray-900 to-gray-800">
+                        <div className="relative p-6 bg-white">
                           {/* Description */}
-                          <p className="text-gray-300 text-sm mb-4 line-clamp-3 leading-relaxed">
+                          <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
                             {solution.shortDescription}
                           </p>
 
@@ -457,32 +457,32 @@ const SolutionsPage: React.FC = () => {
                                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
                               </div>
-                              <span className="text-sm text-gray-300">{solution.category}</span>
+                              <span className="text-sm text-gray-700">{solution.category}</span>
                             </div>
                             
                             <div className="flex items-center space-x-3">
                               <div className="w-6 h-6 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                                <svg className="w-3 h-3 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-3 h-3 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                               </div>
-                              <span className="text-sm text-gray-300">{solution.industry}</span>
+                              <span className="text-sm text-gray-700">{solution.industry}</span>
                             </div>
 
                             <div className="flex items-center space-x-3">
                               <div className="w-6 h-6 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                                <svg className="w-3 h-3 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-3 h-3 text-cyan-600" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                                 </svg>
                               </div>
-                              <span className="text-sm text-gray-300">{solution.deployment?.type || 'Cloud'}</span>
+                              <span className="text-sm text-gray-700">{solution.deployment?.type || 'Cloud'}</span>
                             </div>
                           </div>
 
 
                           {/* Description */}
-                          <div className="pt-4 border-t border-gray-700">
-                            <p className="text-sm text-gray-300 leading-relaxed line-clamp-3 mb-4">
+                          <div className="pt-4 border-t border-gray-200">
+                            <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4">
                               {/* {solution.description} */}
                             </p>
                             
@@ -516,7 +516,7 @@ const SolutionsPage: React.FC = () => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
                         whileHover={{ scale: 1.01 }}
-                        className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 p-6 hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 cursor-pointer group"
+                        className="relative bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer group"
                         onClick={() => handleSolutionClick(solution._id)}
                       >
                         {/* Glowing background effect */}
@@ -564,17 +564,17 @@ const SolutionsPage: React.FC = () => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <h3 className="text-lg font-semibold text-white mb-1">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-1">
                                   {solution.title}
                                 </h3>
-                                <p className="text-gray-300 mb-3 line-clamp-2">
+                                <p className="text-gray-600 mb-3 line-clamp-2">
                                   {solution.description}
                                 </p>
                                 
 
                                 {/* Description */}
                                 <div className="mb-4">
-                                  <p className="text-sm text-gray-300 leading-relaxed line-clamp-2">
+                                  <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
                                     {solution.description}
                                   </p>
                                 </div>

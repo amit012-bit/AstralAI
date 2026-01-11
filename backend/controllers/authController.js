@@ -408,6 +408,85 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Get or update user data (for solutions-hub-main compatibility)
+ * Maps buyer->customer, seller->vendor
+ * @route GET/POST /api/user
+ * @access Private
+ */
+const getUserData = catchAsync(async (req, res, next) => {
+  const HealthcareInstitution = require('../models/HealthcareInstitution');
+  const Vendor = require('../models/Vendor');
+  
+  const user = await User.findById(req.user._id).select('-password');
+  
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+
+  // Check if user has profiles
+  const hasInstitution = await HealthcareInstitution.findOne({ userId: user._id });
+  const hasVendor = await Vendor.findOne({ userId: user._id });
+  
+  // Update profile flags
+  user.hasInstitutionProfile = !!hasInstitution;
+  user.hasVendorProfile = !!hasVendor;
+  if ((hasInstitution || hasVendor) && !user.profileCompletedAt) {
+    user.profileCompletedAt = new Date();
+  }
+  await user.save();
+
+  // Map role for frontend compatibility (customer->buyer, vendor->seller)
+  const userData = user.getProfile();
+  const roleMap = { customer: 'buyer', vendor: 'seller', superadmin: 'superadmin' };
+  userData.role = roleMap[userData.role] || userData.role;
+
+  res.status(200).json({
+    success: true,
+    data: userData
+  });
+});
+
+const updateUserRole = catchAsync(async (req, res, next) => {
+  const HealthcareInstitution = require('../models/HealthcareInstitution');
+  const Vendor = require('../models/Vendor');
+  
+  const { role } = req.body;
+  
+  // Map buyer->customer, seller->vendor
+  const roleMap = { buyer: 'customer', seller: 'vendor' };
+  const backendRole = roleMap[role] || role;
+  
+  if (!['customer', 'vendor'].includes(backendRole)) {
+    return next(new AppError('Invalid role. Must be buyer or seller', 400));
+  }
+
+  const user = await User.findById(req.user._id);
+  
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+
+  user.role = backendRole;
+  await user.save();
+
+  // Check profile flags
+  const hasInstitution = await HealthcareInstitution.findOne({ userId: user._id });
+  const hasVendor = await Vendor.findOne({ userId: user._id });
+  user.hasInstitutionProfile = !!hasInstitution;
+  user.hasVendorProfile = !!hasVendor;
+  await user.save();
+
+  const userData = user.getProfile();
+  const frontendRoleMap = { customer: 'buyer', vendor: 'seller', superadmin: 'superadmin' };
+  userData.role = frontendRoleMap[userData.role] || userData.role;
+
+  res.status(200).json({
+    success: true,
+    data: userData
+  });
+});
+
 module.exports = {
   register,
   login,
@@ -419,5 +498,7 @@ module.exports = {
   logout,
   deleteAccount,
   verifyEmail,
-  getAllUsers
+  getAllUsers,
+  getUserData,
+  updateUserRole
 };

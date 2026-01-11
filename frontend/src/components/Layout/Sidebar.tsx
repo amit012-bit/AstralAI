@@ -24,15 +24,24 @@ import {
   BookOpenIcon,
   InformationCircleIcon,
   ChevronDownIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  BuildingStorefrontIcon,
+  ClipboardDocumentCheckIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  expandedWidth?: number;
+  collapsedWidth?: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
+const Sidebar: React.FC<SidebarProps> = ({ 
+  isCollapsed, 
+  onToggle,
+  expandedWidth = 240,
+  collapsedWidth = 64,
+}) => {
   const router = useRouter();
   const { user, isAuthenticated, logout, isLoading } = useAuth();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -53,17 +62,33 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       badge: null,
       requiresAuth: false
     },
-    { 
-      name: 'AI Agent', 
-      href: '/chat', 
-      icon: ChatBubbleLeftRightIcon,
-      badge: null,
-      requiresAuth: false
-    },
+    // AI Agent - Hidden for now, can be enabled later
+    // { 
+    //   name: 'AI Agent', 
+    //   href: '/chat', 
+    //   icon: ChatBubbleLeftRightIcon,
+    //   badge: null,
+    //   requiresAuth: false
+    // },
     { 
       name: 'Queries', 
       href: '/queries', 
       icon: DocumentTextIcon,
+      badge: null,
+      requiresAuth: true
+    },
+    { 
+      name: 'My Vault', 
+      href: '/vendor', 
+      icon: BuildingStorefrontIcon,
+      badge: null,
+      requiresAuth: true,
+      roles: ['vendor', 'superadmin']
+    },
+    { 
+      name: 'Proposals', 
+      href: '/proposals', 
+      icon: ClipboardDocumentCheckIcon,
       badge: null,
       requiresAuth: true
     },
@@ -74,20 +99,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       badge: null,
       requiresAuth: false
     },
-    { 
-      name: 'Blog', 
-      href: '/blog', 
-      icon: BookOpenIcon,
-      badge: null,
-      requiresAuth: false
-    },
-    { 
-      name: 'About', 
-      href: '/about', 
-      icon: InformationCircleIcon,
-      badge: null,
-      requiresAuth: false
-    },
+    // Blog and About pages hidden for now
+    // { 
+    //   name: 'Blog', 
+    //   href: '/blog', 
+    //   icon: BookOpenIcon,
+    //   badge: null,
+    //   requiresAuth: false
+    // },
+    // { 
+    //   name: 'About', 
+    //   href: '/about', 
+    //   icon: InformationCircleIcon,
+    //   badge: null,
+    //   requiresAuth: false
+    // },
   ];
 
   // Admin navigation items (only for superadmins) - Removed separate admin section
@@ -127,18 +153,34 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     !item.requiresAuth || isAuthenticated
   );
 
+  // When collapsed, remove the dashboard/home entry and inject an expand arrow that sits in the same slot
+  const navigationItems = isCollapsed 
+    ? [
+        {
+          name: 'Expand sidebar',
+          icon: ChevronRightIcon,
+          onClick: onToggle,
+          href: null,
+          badge: null,
+          requiresAuth: false
+        },
+        ...visibleNavigation.filter(item => item.href !== '/dashboard'),
+      ]
+    : visibleNavigation;
+
   return (
     <motion.aside
       initial={false}
       animate={{
-        width: isCollapsed ? 64 : 240,
+        // Dynamically animate between collapsed and expanded widths to keep layout responsive
+        width: isCollapsed ? collapsedWidth : expandedWidth,
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="fixed left-0 top-0 h-screen bg-gray-900 text-white z-50 shadow-2xl border-r-2 border-gray-700 shadow-gray-900/50"
+      className="fixed left-0 top-0 h-screen bg-white text-gray-900 z-50 shadow-2xl border-r-2 border-gray-200 shadow-gray-200/50"
     >
       <div className="flex flex-col h-screen max-h-screen overflow-hidden">
         {/* Header Section - Classic Minimal */}
-        <div className="px-4 py-5 border-b border-gray-700 h-20 flex items-center">
+        <div className="px-4 py-5 border-b border-gray-200 h-20 flex items-center">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-3 group">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -151,7 +193,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     animate={{ opacity: 1, width: "auto" }}
                     exit={{ opacity: 0, width: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="text-lg font-semibold text-white whitespace-nowrap overflow-hidden"
+                    className="text-lg font-semibold text-gray-900 whitespace-nowrap overflow-hidden"
                   >
                     AstralAI
                   </motion.span>
@@ -162,12 +204,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
             {/* Collapse/Expand Button */}
             <button
               onClick={onToggle}
-              className="p-1.5 rounded-md hover:bg-gray-800 transition-colors"
+              className="p-1.5 rounded-md hover:bg-gray-100 transition-colors"
             >
               {isCollapsed ? (
-                <ChevronRightIcon className="w-4 h-4 text-gray-400" />
+                <ChevronRightIcon className="w-4 h-4 text-gray-500" />
               ) : (
-                <ChevronDownIcon className="w-4 h-4 text-gray-400 rotate-90" />
+                <ChevronDownIcon className="w-4 h-4 text-gray-500 rotate-90" />
               )}
             </button>
           </div>
@@ -176,127 +218,97 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
         {/* Navigation - Classic Compact */}
         <nav className="flex-1 p-3 space-y-1 overflow-hidden">
-          {visibleNavigation.map((item, index) => (
+          {navigationItems.map((item, index) => (
             <div key={item.name}>
               <div className="relative">
-                <Link href={item.href}>
-                  <motion.div
+                {item.href ? (
+                  <Link href={item.href}>
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`group relative flex items-center justify-between px-3 py-2 rounded-md transition-all duration-200 ${
+                        router.pathname === item.href
+                          ? 'bg-blue-600 text-white'
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <item.icon className="w-4 h-4 flex-shrink-0" />
+                        <AnimatePresence>
+                          {!isCollapsed && (
+                            <motion.span 
+                              initial={{ opacity: 0, width: 0 }}
+                              animate={{ opacity: 1, width: "auto" }}
+                              exit={{ opacity: 0, width: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="text-sm font-medium whitespace-nowrap overflow-hidden"
+                            >
+                              {item.name}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                      
+                      {/* Badge */}
+                      {item.badge && !isCollapsed && (
+                        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </motion.div>
+                  </Link>
+                ) : (
+                  <motion.button
+                    type="button"
+                    onClick={'onClick' in item ? item.onClick : undefined}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`group relative flex items-center justify-between px-3 py-2 rounded-md transition-all duration-200 ${
-                      router.pathname === item.href
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                    }`}
+                    className="group w-full relative flex items-center justify-center px-3 py-2 rounded-md transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div className="flex items-center space-x-2">
-                      <item.icon className="w-4 h-4 flex-shrink-0" />
-                      <AnimatePresence>
-                        {!isCollapsed && (
-                          <motion.span 
-                            initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: "auto" }}
-                            exit={{ opacity: 0, width: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="text-sm font-medium whitespace-nowrap overflow-hidden"
-                          >
-                            {item.name}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                    
-                    {/* Badge */}
-                    {item.badge && !isCollapsed && (
-                      <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                        {item.badge}
-                      </span>
-                    )}
-                  </motion.div>
-                </Link>
+                    <item.icon className="w-4 h-4 flex-shrink-0" />
+                    <AnimatePresence>
+                      {!isCollapsed && (
+                        <motion.span 
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "auto" }}
+                          exit={{ opacity: 0, width: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="ml-2 text-sm font-medium whitespace-nowrap overflow-hidden"
+                        >
+                          {item.name}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+                )}
 
                 {/* Tooltip for collapsed state */}
                 {isCollapsed && (
-                  <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
+                  <div className="absolute left-full ml-2 px-3 py-2 bg-white text-gray-900 text-sm rounded-lg shadow-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
                     {item.name}
                     {item.badge && (
-                      <span className="ml-2 bg-red-500 text-xs px-1 py-0.5 rounded">
+                      <span className="ml-2 bg-red-500 text-white text-xs px-1 py-0.5 rounded">
                         {item.badge}
                       </span>
                     )}
                     {/* Arrow pointing to the icon */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-gray-800"></div>
-                  </div>
+                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-white"></div>
+                    </div>
                 )}
               </div>
             </div>
           ))}
-
-          {/* Add Solution Button (for vendors and superadmins) */}
-          {!isLoading && isAuthenticated && (user?.role === 'vendor' || user?.role === 'superadmin') && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <div className="relative">
-                <button 
-                  onClick={() => router.push('/solutions/new')}
-                  className={`group relative flex items-center rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 transition-all duration-200 cursor-pointer w-full ${
-                    isCollapsed ? 'justify-center px-3 py-3' : 'justify-between px-4 py-3'
-                  }`}>
-                    <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
-                      <PlusIcon className="w-5 h-5 flex-shrink-0" />
-                      <AnimatePresence>
-                        {!isCollapsed && (
-                          <motion.span 
-                            initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: "auto" }}
-                            exit={{ opacity: 0, width: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="font-medium whitespace-nowrap overflow-hidden"
-                          >
-                            Add Solution
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </button>
-
-                {/* Tooltip for collapsed state */}
-                {isCollapsed && (
-                  <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
-                    Add Solution
-                    {/* Arrow pointing to the icon */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-gray-800"></div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
         </nav>
-
-        {/* Expand Arrow - Shows when collapsed */}
-        {isCollapsed && (
-          <div className="px-3 pb-3">
-            <motion.button
-              onClick={onToggle}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="w-full flex items-center justify-center p-2 rounded-md bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
-              title="Expand sidebar"
-            >
-              <ChevronRightIcon className="w-5 h-5" />
-            </motion.button>
-          </div>
-        )}
 
         {/* User Section - Classic Compact Design */}
         {isAuthenticated ? (
-          <div className="mt-auto border-t border-gray-700">
+          <div className="mt-auto border-t border-gray-200">
             {/* User Profile - Compact */}
             <div className="p-3">
               <div className="flex items-center space-x-3">
@@ -314,10 +326,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                       transition={{ duration: 0.2 }}
                       className="flex-1 min-w-0"
                     >
-                      <p className="text-xs font-medium text-white truncate">
+                      <p className="text-xs font-medium text-gray-900 truncate">
                         {user?.firstName} {user?.lastName}
                       </p>
-                      <p className="text-xs text-gray-400 truncate">
+                      <p className="text-xs text-gray-500 truncate">
                         {user?.email}
                       </p>
                     </motion.div>
@@ -334,7 +346,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`group relative flex items-center rounded-md text-gray-400 hover:text-white hover:bg-gray-800 transition-colors ${
+                      className={`group relative flex items-center rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors ${
                         isCollapsed ? 'justify-center p-1' : 'px-2 py-1.5 space-x-2'
                       }`}
                     >
@@ -347,10 +359,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                   
                   {/* Tooltip for collapsed state */}
                   {isCollapsed && (
-                    <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
+                    <div className="absolute left-full ml-2 px-3 py-2 bg-white text-gray-900 text-sm rounded-lg shadow-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
                       {item.name}
                       {/* Arrow pointing to the icon */}
-                      <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-gray-800"></div>
+                      <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-white"></div>
                     </div>
                   )}
                 </div>
@@ -362,7 +374,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleLogout}
-                  className={`group relative flex items-center rounded-md text-gray-400 hover:text-red-400 hover:bg-red-900/20 transition-colors ${
+                  className={`group relative flex items-center rounded-md text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors ${
                     isCollapsed ? 'justify-center p-1' : 'px-2 py-1.5 space-x-2'
                   }`}
                 >
@@ -374,10 +386,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                 
                 {/* Tooltip for collapsed state */}
                 {isCollapsed && (
-                  <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
+                  <div className="absolute left-full ml-2 px-3 py-2 bg-white text-gray-900 text-sm rounded-lg shadow-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
                     Sign out
                     {/* Arrow pointing to the icon */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-gray-800"></div>
+                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-white"></div>
                   </div>
                 )}
               </div>
@@ -385,7 +397,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
           </div>
         ) : (
           /* Sign In Section for Unauthenticated Users */
-          <div className="mt-auto border-t border-gray-700">
+          <div className="mt-auto border-t border-gray-200">
             <div className="p-3">
               <div className="text-center">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -399,8 +411,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <p className="text-sm font-medium text-white mb-1">Welcome to AstralAI</p>
-                      <p className="text-xs text-gray-400 mb-3">Sign in to access your dashboard</p>
+                      <p className="text-sm font-medium text-gray-900 mb-1">Welcome to AstralAI</p>
+                      <p className="text-xs text-gray-500 mb-3">Sign in to access your dashboard</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -426,7 +438,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full bg-transparent border border-gray-600 text-gray-300 font-medium rounded-lg px-4 py-2 transition-all duration-200 hover:bg-gray-700 hover:text-white"
+                        className="w-full bg-transparent border border-gray-300 text-gray-700 font-medium rounded-lg px-4 py-2 transition-all duration-200 hover:bg-gray-50 hover:text-gray-900"
                       >
                         <span className="text-sm">Create Account</span>
                       </motion.button>
@@ -438,10 +450,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
             
             {/* Tooltip for collapsed state */}
             {isCollapsed && (
-              <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
+              <div className="absolute left-full ml-2 px-3 py-2 bg-white text-gray-900 text-sm rounded-lg shadow-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 top-1/2 transform -translate-y-1/2">
                 Sign In
                 {/* Arrow pointing to the icon */}
-                <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-gray-800"></div>
+                <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-white"></div>
               </div>
             )}
           </div>
