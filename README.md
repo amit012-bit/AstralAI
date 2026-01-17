@@ -1,4 +1,4 @@
-# AstralAI
+# AstroVault AI
 
 **Astral + AI — starry, visionary AI hub**
 
@@ -179,7 +179,7 @@ After seeding the database, you can use these credentials:
 ## 🏗️ Project Structure
 
 ```
-AstralAI/
+AstroVault AI/
 ├── backend/                 # Node.js/Express API
 │   ├── config/             # Database configuration
 │   ├── controllers/        # Route controllers
@@ -271,4 +271,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**AstralAI** - Connecting businesses with cutting-edge AI solutions 🚀✨
+**AstroVault AI** - Connecting businesses with cutting-edge AI solutions 🚀✨

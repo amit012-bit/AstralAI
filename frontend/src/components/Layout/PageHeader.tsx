@@ -109,7 +109,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         };
       default:
         return {
-          title: 'AstralAI',
+          title: 'AstroVault AI',
           subtitle: '(Astral AI - Starry, Visionary AI Hub)',
           searchPlaceholder: 'Search AI solutions...'
         };
@@ -123,7 +123,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm h-20 flex items-center"
+      className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm h-14 flex items-center"
       style={{
         // Match header offset to current sidebar width so it always fits snugly against content
         marginLeft: `${sidebarWidth}px`,
@@ -136,14 +136,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         }`}
       >
         <div className="flex items-center justify-between">
-          {/* Left Side - Page Title */}
+          {/* Left Side - Page Title (Hidden) */}
           <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-semibold text-gray-900">
-              {finalTitle}
-            </h1>
-            <span className="text-sm text-blue-500 font-medium">
-              {finalSubtitle}
-            </span>
             {additionalContent}
           </div>
           
@@ -151,13 +145,13 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           {showSearch && (
             <div className="flex items-center space-x-3">
               <div className="relative w-full max-w-md">
-                <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <MagnifyingGlassIcon className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   value={searchValue}
                   onChange={(e) => onSearchChange?.(e.target.value)}
                   placeholder={finalSearchPlaceholder}
-                  className="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full bg-white border border-gray-300 rounded-lg pl-9 pr-3 py-1.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               
@@ -165,10 +159,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               {onAdvancedSearch && currentFilters && pageType && (
                 <button
                   onClick={() => setIsAdvancedSearchOpen(true)}
-                  className="relative p-2.5 bg-white border border-gray-300 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                  className="relative p-2 bg-white border border-gray-300 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
                   title="Advanced Search"
                 >
-                  <AdjustmentsHorizontalIcon className="h-5 w-5" />
+                  <AdjustmentsHorizontalIcon className="h-4 w-4" />
                   {/* Filter indicator badge */}
                   {(() => {
                     const hasActiveFilters = 

@@ -92,13 +92,14 @@ const Sidebar: React.FC<SidebarProps> = ({
       badge: null,
       requiresAuth: true
     },
-    { 
-      name: 'Categories', 
-      href: '/categories', 
-      icon: TagIcon,
-      badge: null,
-      requiresAuth: false
-    },
+    // Categories - Hidden for now
+    // { 
+    //   name: 'Categories', 
+    //   href: '/categories', 
+    //   icon: TagIcon,
+    //   badge: null,
+    //   requiresAuth: false
+    // },
     // Blog and About pages hidden for now
     // { 
     //   name: 'Blog', 
@@ -180,10 +181,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       <div className="flex flex-col h-screen max-h-screen overflow-hidden">
         {/* Header Section - Classic Minimal */}
-        <div className="px-4 py-5 border-b border-gray-200 h-20 flex items-center">
+        <div className="px-4 py-3 border-b border-gray-200 h-14 flex items-center">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-3 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                 <SparklesIcon className="w-5 h-5 text-white" />
               </div>
               <AnimatePresence>
@@ -195,7 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     transition={{ duration: 0.2 }}
                     className="text-lg font-semibold text-gray-900 whitespace-nowrap overflow-hidden"
                   >
-                    AstralAI
+                    AstroVault AI
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -312,7 +313,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {/* User Profile - Compact */}
             <div className="p-3">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-medium text-xs">
                     {user?.firstName?.charAt(0) || 'U'}
                   </span>
@@ -400,7 +401,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className="mt-auto border-t border-gray-200">
             <div className="p-3">
               <div className="text-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3">
                   <UserIcon className="w-5 h-5 text-white" />
                 </div>
                 <AnimatePresence>
@@ -411,7 +412,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <p className="text-sm font-medium text-gray-900 mb-1">Welcome to AstralAI</p>
+                      <p className="text-sm font-medium text-gray-900 mb-1">Welcome to AstroVault AI</p>
                       <p className="text-xs text-gray-500 mb-3">Sign in to access your dashboard</p>
                     </motion.div>
                   )}
@@ -422,7 +423,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium rounded-lg transition-all duration-200 hover:from-blue-600 hover:to-purple-600 ${
+                      className={`w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg transition-all duration-200 hover:from-purple-700 hover:to-blue-700 ${
                         isCollapsed ? 'px-3 py-2' : 'px-4 py-2'
                       }`}
                     >

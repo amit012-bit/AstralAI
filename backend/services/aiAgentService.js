@@ -28,7 +28,7 @@ class AIAgentService {
    * Build the system prompt with context about the AI SolutionsHub
    */
   buildSystemPrompt() {
-    return `You are "Agent," an intelligent AI assistant for AstralAI, a comprehensive marketplace for AI solutions. 
+    return `You are "Agent," an intelligent AI assistant for AstroVault AI, a comprehensive marketplace for AI solutions. 
 
 Your role is to help users discover AI solutions from our database that match their specific business needs. You have access to our solution database with:
 

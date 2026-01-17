@@ -124,8 +124,8 @@ const RegisterPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Create Account - AstralAI</title>
-        <meta name="description" content="Create your AstralAI account and start discovering AI solutions" />
+        <title>Create Account - AstroVault AI</title>
+        <meta name="description" content="Create your AstroVault AI account and start discovering AI solutions" />
       </Head>
 
       <div className="min-h-screen bg-gray-800 flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -155,7 +155,7 @@ const RegisterPage: React.FC = () => {
                         <span className="text-white font-bold text-lg">AI</span>
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-white">AstralAI</h3>
+                        <h3 className="text-xl font-bold text-white">AstroVault AI</h3>
                         <p className="text-blue-200 text-sm">AI Solutions Platform</p>
                       </div>
                     </div>
@@ -192,7 +192,7 @@ const RegisterPage: React.FC = () => {
                     <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                       <span className="text-white font-bold text-xl">AI</span>
                     </div>
-                    <span className="text-2xl font-bold text-white">AstralAI</span>
+                    <span className="text-2xl font-bold text-white">AstroVault AI</span>
                   </Link>
                 </motion.div>
 

@@ -197,7 +197,7 @@ const AdminSolutionsPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Pending Solutions - AstralAI</title>
+        <title>Pending Solutions - AstroVault AI</title>
         <meta name="description" content="Review and approve pending AI solutions" />
       </Head>
 

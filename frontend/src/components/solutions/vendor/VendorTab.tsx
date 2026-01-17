@@ -188,7 +188,26 @@ export const VendorTab: React.FC<VendorTabProps> = ({ onComplete }) => {
       }
     } catch (error: any) {
       console.error('Error saving vendor details:', error);
-      toast.error(error.response?.data?.error || error.message || 'Failed to save vendor details');
+      // Extract error message properly - handle both string and object errors
+      let errorMessage = 'Failed to save vendor details';
+      if (error.response?.data?.error) {
+        const errorData = error.response.data.error;
+        if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        } else if (errorData?.message) {
+          errorMessage = errorData.message;
+        } else if (typeof errorData === 'object') {
+          // Handle validation errors object
+          const errorKeys = Object.keys(errorData);
+          if (errorKeys.length > 0) {
+            const firstError = errorData[errorKeys[0]];
+            errorMessage = typeof firstError === 'string' ? firstError : 'Validation failed';
+          }
+        }
+      } else if (error.message) {
+        errorMessage = typeof error.message === 'string' ? error.message : 'Failed to save vendor details';
+      }
+      toast.error(errorMessage);
     }
   }, [vendorDetails]);
 

@@ -188,7 +188,7 @@ const AdminUsersPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Manage Users - AstralAI</title>
+        <title>Manage Users - AstroVault AI</title>
         <meta name="description" content="Manage all registered users" />
       </Head>
 
@@ -344,7 +344,7 @@ const AdminUsersPage: React.FC = () => {
                         >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
-                              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
                                 {getRoleIcon(user.role)}
                               </div>
                               <div className="ml-4">

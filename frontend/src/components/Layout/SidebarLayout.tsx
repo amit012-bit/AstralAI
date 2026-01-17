@@ -128,11 +128,11 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({
               <Bars3Icon className="w-6 h-6" />
             </button>
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                 <SparklesIcon className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-                AstralAI
+              <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                AstroVault AI
               </span>
             </Link>
             <div className="w-10"></div> {/* Spacer */}
@@ -158,7 +158,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({
         )}
         
         {/* Content */}
-        <main className={`min-h-screen overflow-y-auto bg-white ${!isMobile ? 'pt-20' : ''}`}>
+        <main className={`min-h-screen overflow-y-auto bg-white ${!isMobile ? 'pt-14' : ''}`}>
           {children}
         </main>
       </div>

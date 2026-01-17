@@ -92,7 +92,7 @@ const Header: React.FC = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  AstralAI
+                  AstroVault AI
                 </motion.span>
               </motion.div>
             </Link>

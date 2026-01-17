@@ -60,8 +60,8 @@ const NewSolutionPage: React.FC = () => {
   return (
     <Layout title="Add Solutions">
       <Head>
-        <title>Add Solutions - AstralAI</title>
-        <meta name="description" content="Add new AI solutions to the AstralAI marketplace." />
+        <title>Add Solutions - AstroVault AI</title>
+        <meta name="description" content="Add new AI solutions to the AstroVault AI marketplace." />
       </Head>
       <div className="bg-gray-800 min-h-screen py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

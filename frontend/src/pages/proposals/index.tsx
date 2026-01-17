@@ -261,61 +261,57 @@ const ProposalsPage: React.FC = () => {
   return (
     <Layout title="Proposals">
       <Head>
-        <title>Proposals - AstralAI</title>
+        <title>Proposals - AstroVault AI</title>
         <meta name="description" content="Submit and respond to solution proposals." />
       </Head>
       
       <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Header */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Proposals</h1>
-                <p className="text-sm text-gray-600 mt-1">
-                  {user?.role === 'customer' 
-                    ? 'Create proposals for solutions you need, or view vendor proposals'
-                    : 'View customer proposals and submit responses, or create your own proposals'}
-                </p>
-              </div>
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
-              >
-                <PlusIcon className="w-5 h-5" />
-                Create Proposal
-              </button>
-            </div>
-
-            {/* Search and Filters */}
-            <div className="flex gap-4 mb-4">
-              <form onSubmit={handleSearch} className="flex-1">
-                <div className="relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          {/* Header Actions */}
+          <div className="mb-4 flex items-center justify-end gap-3">
+                {/* Search Bar */}
+                <form onSubmit={handleSearch} className="relative">
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
                     placeholder="Search proposals..."
                     value={filters.search}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-64 pl-9 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-sm"
                   />
+                </form>
+                {/* Create Proposal Button */}
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 flex items-center gap-2 font-medium shadow-md hover:shadow-lg"
+                >
+                  <PlusIcon className="w-5 h-5" />
+                  Create Proposal
+                </button>
+                {/* Filters Button - Icon Only with Tooltip */}
+                <div className="relative group">
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className={`p-2.5 border rounded-xl flex items-center justify-center transition-all ${
+                      showFilters 
+                        ? 'bg-purple-50 border-purple-300 text-purple-700 shadow-sm' 
+                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-sm'
+                    }`}
+                  >
+                    <FunnelIcon className="w-5 h-5" />
+                  </button>
+                  {/* Tooltip */}
+                  <div className="absolute right-0 top-full mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                    <div className="bg-gray-900 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg">
+                      Filter
+                      <div className="absolute right-3 -top-1 w-2 h-2 bg-gray-900 rotate-45"></div>
+                    </div>
+                  </div>
                 </div>
-              </form>
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`px-4 py-2 border rounded-md flex items-center gap-2 transition-colors ${
-                  showFilters 
-                    ? 'bg-blue-50 border-blue-300 text-blue-700' 
-                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <FunnelIcon className="w-5 h-5" />
-                Filters
-              </button>
-            </div>
+          </div>
 
-            {/* Filter Panel */}
-            <AnimatePresence>
+          {/* Filter Panel */}
+          <AnimatePresence>
               {showFilters && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
@@ -323,13 +319,13 @@ const ProposalsPage: React.FC = () => {
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="bg-gray-50 border border-gray-200 rounded-md p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-sm">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                       <select
                         value={filters.category}
                         onChange={(e) => handleFilterChange('category', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                       >
                         {CATEGORIES.map(cat => (
                           <option key={cat} value={cat}>{cat}</option>
@@ -341,7 +337,7 @@ const ProposalsPage: React.FC = () => {
                       <select
                         value={filters.industry}
                         onChange={(e) => handleFilterChange('industry', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                       >
                         {INDUSTRIES.map(ind => (
                           <option key={ind} value={ind}>{ind}</option>
@@ -353,7 +349,7 @@ const ProposalsPage: React.FC = () => {
                       <select
                         value={filters.status}
                         onChange={(e) => handleFilterChange('status', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                       >
                         {STATUS_OPTIONS.map(status => (
                           <option key={status} value={status}>{status}</option>
@@ -365,7 +361,7 @@ const ProposalsPage: React.FC = () => {
                       <select
                         value={filters.creatorType}
                         onChange={(e) => handleFilterChange('creatorType', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                       >
                         <option value="">All Types</option>
                         <option value="customer">Customer Proposals</option>
@@ -376,7 +372,6 @@ const ProposalsPage: React.FC = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
 
           {/* Proposals Grid */}
           {loading ? (
@@ -396,7 +391,7 @@ const ProposalsPage: React.FC = () => {
                 <div className="mt-6">
                   <button
                     onClick={() => setShowCreateModal(true)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 inline-flex items-center gap-2 font-medium shadow-md hover:shadow-lg"
                   >
                     <PlusIcon className="w-5 h-5" />
                     List Your Problem
@@ -406,31 +401,34 @@ const ProposalsPage: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-6">
                 {filteredProposals.map((proposal) => (
                   <motion.div
                     key={proposal._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                    className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden relative"
                     onClick={() => router.push(`/proposals/${proposal._id}`)}
                   >
-                    <div className="p-6">
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-3">
+                    {/* Elegant Purple Gradient Accent Bar */}
+                    <div className="h-1 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600"></div>
+                    
+                    <div className="p-8">
+                      {/* Category Header with Icon */}
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                          <SparklesIcon className="w-5 h-5 text-white" />
+                        </div>
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
-                            {proposal.title}
-                          </h3>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusBadgeColor(proposal.status)}`}>
+                          <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+                            {proposal.category || 'PROPOSAL'}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${getStatusBadgeColor(proposal.status)}`}>
                               {proposal.status.replace('_', ' ')}
                             </span>
-                            <span className={`px-2 py-1 text-xs font-medium rounded ${getPriorityBadgeColor(proposal.priority)}`}>
-                              {proposal.priority}
-                            </span>
                             {proposal.creatorType === 'vendor' && (
-                              <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-800">
+                              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
                                 Vendor
                               </span>
                             )}
@@ -438,58 +436,58 @@ const ProposalsPage: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Description */}
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                      {/* Main Description - Large Quote Style */}
+                      <p className="text-base text-gray-900 leading-relaxed mb-6 line-clamp-4 font-medium">
                         {proposal.description}
                       </p>
 
-                      {/* Details */}
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <TagIcon className="w-4 h-4" />
-                          <span>{proposal.category}</span>
+                      {/* Engagement Stats - Like Star Ratings */}
+                      <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+                        <div className="flex items-center gap-1">
+                          <EyeIcon className="w-4 h-4 text-gray-400" />
+                          <span className="text-sm font-medium text-gray-700">{proposal.viewsCount}</span>
+                          <span className="text-xs text-gray-500 ml-1">views</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <BuildingOfficeIcon className="w-4 h-4" />
-                          <span>{proposal.industry}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <CurrencyDollarIcon className="w-4 h-4" />
-                          <span>{formatBudget(proposal.requirements.budget)}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <CalendarIcon className="w-4 h-4" />
-                          <span>{proposal.requirements.timeline}</span>
+                        <div className="flex items-center gap-1">
+                          <ChatBubbleLeftRightIcon className="w-4 h-4 text-gray-400" />
+                          <span className="text-sm font-medium text-gray-700">{proposal.responsesCount}</span>
+                          <span className="text-xs text-gray-500 ml-1">responses</span>
                         </div>
                       </div>
 
-                      {/* Footer */}
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                        <div className="flex items-center gap-4 text-xs text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <EyeIcon className="w-4 h-4" />
-                            {proposal.viewsCount}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <DocumentTextIcon className="w-4 h-4" />
-                            {proposal.responsesCount} {proposal.responsesCount === 1 ? 'response' : 'responses'}
-                          </span>
+                      {/* Creator Info - Bottom Section */}
+                      <div className="flex items-center justify-between relative">
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-600 mb-1">
+                            Proposal by <span className="font-semibold text-gray-900">{proposal.createdBy.firstName} {proposal.createdBy.lastName}</span>
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {proposal.industry} • {new Date(proposal.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </p>
                         </div>
-                        <div className="text-xs text-gray-500">
-                          {new Date(proposal.createdAt).toLocaleDateString()}
+                        {/* Avatar Circle */}
+                        <div className="relative">
+                          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-md relative z-10">
+                            <span className="text-white font-semibold text-sm">
+                              {proposal.createdBy.firstName?.charAt(0) || 'U'}
+                              {proposal.createdBy.lastName?.charAt(0) || ''}
+                            </span>
+                          </div>
+                          {/* Subtle glow effect */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-blue-400/30 rounded-full blur-sm -z-0"></div>
                         </div>
                       </div>
 
-                      {/* Respond Button - Only for vendors on customer proposals */}
-                      {user?.role === 'vendor' && proposal.creatorType === 'customer' && (
-                        <div className="mt-4 pt-4 border-t border-gray-200">
+                      {/* Respond Button - Available for all users on customer proposals and for proposal creators */}
+                      {(proposal.creatorType === 'customer' || user?._id === proposal.createdBy._id) && (
+                        <div className="mt-6 pt-6 border-t border-gray-100">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedProposal(proposal);
                               setShowResponseModal(true);
                             }}
-                            className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                            className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
                           >
                             <ChatBubbleLeftRightIcon className="w-5 h-5" />
                             Respond with Solution

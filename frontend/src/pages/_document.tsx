@@ -25,7 +25,7 @@ export default function Document() {
         <meta name="googlebot" content="index, follow" />
         
         {/* Open Graph Meta Tags */}
-        <meta property="og:site_name" content="AstralAI" />
+        <meta property="og:site_name" content="AstroVault AI" />
         <meta property="og:locale" content="en_US" />
         
         {/* Twitter Card Meta Tags */}
@@ -33,7 +33,7 @@ export default function Document() {
         <meta name="twitter:site" content="@aisolutionshub" />
         
         {/* Additional Meta Tags */}
-        <meta name="author" content="AstralAI Team" />
+        <meta name="author" content="AstroVault AI Team" />
         <meta name="keywords" content="AI solutions, artificial intelligence, business automation, machine learning, AI marketplace" />
         
         {/* Security Headers */}
@@ -51,7 +51,7 @@ export default function Document() {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "AstralAI",
+              "name": "AstroVault AI",
               "description": "The leading marketplace for AI solutions",
               "url": "https://aisolutionshub.com",
               "logo": "https://aisolutionshub.com/logo.png",
@@ -80,7 +80,7 @@ export default function Document() {
             dangerouslySetInnerHTML={{
               __html: `
                 // Add your analytics script here
-                console.log('AstralAI - Production Mode');
+                console.log('AstroVault AI - Production Mode');
               `
             }}
           />

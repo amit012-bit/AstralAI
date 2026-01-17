@@ -63,10 +63,10 @@ const Footer: React.FC = () => {
               viewport={{ once: true }}
             >
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-accent-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-lg">AI</span>
                 </div>
-                <span className="text-xl font-bold">AstralAI</span>
+                <span className="text-xl font-bold">AstroVault AI</span>
               </div>
               
               <p className="text-gray-300 mb-6 max-w-md">
@@ -181,7 +181,7 @@ const Footer: React.FC = () => {
                   href={social.href}
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors duration-200"
+                  className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors duration-200"
                 >
                   <span className="sr-only">{social.name}</span>
                   {/* You can add actual icons here */}
@@ -197,12 +197,12 @@ const Footer: React.FC = () => {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-l-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                  className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-l-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-r-lg hover:bg-primary-700 transition-colors duration-200"
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-r-lg hover:from-purple-700 hover:to-blue-700 transition-colors duration-200"
                 >
                   Subscribe
                 </motion.button>
@@ -217,7 +217,7 @@ const Footer: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © 2024 AstralAI. All rights reserved.
+              © 2024 AstroVault AI. All rights reserved.
             </div>
             
             <div className="flex flex-wrap justify-center md:justify-end space-x-6">

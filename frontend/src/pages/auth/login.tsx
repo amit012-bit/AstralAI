@@ -102,8 +102,8 @@ const LoginPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Sign In - AstralAI</title>
-        <meta name="description" content="Sign in to your AstralAI account" />
+        <title>Sign In - AstroVault AI</title>
+        <meta name="description" content="Sign in to your AstroVault AI account" />
       </Head>
 
       <div className="min-h-screen bg-gray-800 flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -133,7 +133,7 @@ const LoginPage: React.FC = () => {
                         <span className="text-white font-bold text-lg">AI</span>
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-white">AstralAI</h3>
+                        <h3 className="text-xl font-bold text-white">AstroVault AI</h3>
                         <p className="text-blue-200 text-sm">AI Solutions Platform</p>
                       </div>
                     </div>
@@ -170,14 +170,14 @@ const LoginPage: React.FC = () => {
                     <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                       <span className="text-white font-bold text-xl">AI</span>
                     </div>
-                    <span className="text-2xl font-bold text-white">AstralAI</span>
+                    <span className="text-2xl font-bold text-white">AstroVault AI</span>
                   </Link>
                 </motion.div>
 
                 {/* Title */}
                 <motion.div variants={itemVariants} className="mb-8">
                   <h2 className="text-3xl font-bold text-white mb-2">
-                    Welcome to AstralAI
+                    Welcome to AstroVault AI
                   </h2>
                   <p className="text-gray-400">
                     Don't have an account? <Link href="/auth/register" className="text-blue-400 hover:text-blue-300 transition-colors">Click here</Link>

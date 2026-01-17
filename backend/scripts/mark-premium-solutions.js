@@ -1,6 +1,6 @@
 /**
  * Script to mark some solutions as premium
- * This demonstrates the premium feature for AstralAI
+ * This demonstrates the premium feature for AstroVault AI
  */
 
 const mongoose = require('mongoose');

@@ -411,8 +411,8 @@ const NewSolutionPage: React.FC = () => {
     // subtitle="Showcase your cutting-edge AI solution to a global audience."
     >
       <Head>
-        <title>Add New Solution - AstralAI</title>
-        <meta name="description" content="Add a new AI solution to the AstralAI marketplace." />
+        <title>Add New Solution - AstroVault AI</title>
+        <meta name="description" content="Add a new AI solution to the AstroVault AI marketplace." />
       </Head>
       <div className="bg-gray-800 min-h-screen py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

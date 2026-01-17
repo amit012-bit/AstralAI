@@ -1,6 +1,6 @@
 /**
  * About Page - Company Information and Mission
- * Displays information about AstralAI and its mission
+ * Displays information about AstroVault AI and its mission
  */
 
 import { motion } from 'framer-motion';
@@ -122,7 +122,7 @@ const AboutPage: React.FC = () => {
               transition={{ duration: 0.6 }}
             >
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-                About AstralAI
+                About AstroVault AI
               </h1>
               <p className="text-xl md:text-2xl text-primary-100 max-w-3xl mx-auto mb-8">
                 We're revolutionizing how businesses discover, evaluate, and implement AI solutions. 
@@ -169,7 +169,7 @@ const AboutPage: React.FC = () => {
                 Our Mission
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                At AstralAI, we believe that artificial intelligence has the power to transform 
+                At AstroVault AI, we believe that artificial intelligence has the power to transform 
                 businesses and solve complex challenges. However, finding the right AI solution can be 
                 overwhelming with thousands of options available.
               </p>
@@ -240,7 +240,7 @@ const AboutPage: React.FC = () => {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose AstralAI?
+              Why Choose AstroVault AI?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We provide everything you need to find, evaluate, and implement the perfect AI solution for your business.

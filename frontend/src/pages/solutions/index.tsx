@@ -396,7 +396,7 @@ const SolutionsPage: React.FC = () => {
                         onClick={() => handleSolutionClick(solution._id)}
                       >
                         {/* Glowing background effect */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-blue-600/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         
                         {/* Animated background pattern */}
                         <div className="absolute inset-0 opacity-20">
@@ -422,7 +422,7 @@ const SolutionsPage: React.FC = () => {
                             {/* Hover Tooltip */}
                             <div className="absolute right-0 top-full mt-2 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
                               <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg border border-gray-700">
-                                Trusted Solution by AstralAI
+                                Trusted Solution by AstroVault AI
                                 <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-gray-700"></div>
                               </div>
                             </div>
@@ -430,7 +430,7 @@ const SolutionsPage: React.FC = () => {
                         )}
 
                         {/* Gradient Header */}
-                        <div className="relative h-32 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 flex items-center justify-center">
+                        <div className="relative h-32 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 flex items-center justify-center">
                           <div className="absolute inset-0 bg-black/20" />
                           <div className="relative z-10 text-center">
                             <div className="w-16 h-16 mx-auto mb-2 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -492,7 +492,7 @@ const SolutionsPage: React.FC = () => {
                                 e.stopPropagation();
                                 handleSolutionClick(solution._id);
                               }}
-                              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-2 px-4 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                               Connect with Vendor
                             </button>
@@ -545,7 +545,7 @@ const SolutionsPage: React.FC = () => {
                             {/* Hover Tooltip */}
                             <div className="absolute right-0 top-full mt-2 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
                               <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg border border-gray-700">
-                                Trusted Solution by AstralAI
+                                Trusted Solution by AstroVault AI
                                 <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-gray-700"></div>
                               </div>
                             </div>
@@ -555,7 +555,7 @@ const SolutionsPage: React.FC = () => {
                         <div className="relative flex items-start space-x-4">
                           {/* Solution Icon */}
                           <div className="flex-shrink-0">
-                            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <div className="w-16 h-16 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                               <SparklesIcon className="h-8 w-8 text-white" />
                             </div>
                           </div>
@@ -586,7 +586,7 @@ const SolutionsPage: React.FC = () => {
                                       e.stopPropagation();
                                       handleSolutionClick(solution._id);
                                     }}
-                                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-2 px-6 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                                   >
                                     Connect
                                   </button>

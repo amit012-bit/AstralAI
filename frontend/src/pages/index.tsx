@@ -11,7 +11,7 @@ const HomePage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>AstralAI - Healthcare AI Solutions Hub</title>
+        <title>AstroVault AI - Healthcare AI Solutions Hub</title>
         <meta name="description" content="Connect healthcare institutions with cutting-edge AI solutions" />
       </Head>
       <SolutionsGrid />

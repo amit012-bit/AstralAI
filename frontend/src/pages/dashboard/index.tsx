@@ -431,7 +431,7 @@ const ManageUsersSection: React.FC = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
                       {getRoleIcon(user.role)}
                     </div>
                     <div className="flex-1">
@@ -752,16 +752,16 @@ const DashboardPage: React.FC = () => {
         <div className="min-h-screen bg-white flex items-center justify-center">
           <div className="max-w-md w-full mx-auto text-center">
             <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <UserIcon className="w-8 h-8 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to AstralAI</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to AstroVault AI</h1>
               <p className="text-gray-600 mb-6">Sign in to access your personalized dashboard and discover AI solutions.</p>
               
               <div className="space-y-3">
                 <button
                   onClick={() => router.push('/auth/login')}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-200"
                 >
                   Sign In
                 </button>
@@ -774,7 +774,7 @@ const DashboardPage: React.FC = () => {
               </div>
               
               <p className="text-sm text-gray-500 mt-6">
-                New to AstralAI? <span className="text-blue-500 hover:text-blue-600 cursor-pointer">Learn more about our platform</span>
+                New to AstroVault AI? <span className="text-blue-500 hover:text-blue-600 cursor-pointer">Learn more about our platform</span>
               </p>
             </div>
           </div>
@@ -818,7 +818,7 @@ const DashboardPage: React.FC = () => {
         };
       default:
         return {
-          title: 'Welcome to AstralAI!',
+          title: 'Welcome to AstroVault AI!',
           subtitle: 'Your gateway to the best AI solutions.'
         };
     }
@@ -1142,7 +1142,7 @@ const DashboardPage: React.FC = () => {
                       className="flex items-center space-x-4 p-4 rounded-lg border border-gray-200 hover:border-blue-500 cursor-pointer transition-colors"
                       onClick={() => router.push(`/solutions/${solution._id}`)}
                     >
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg flex items-center justify-center">
                         <SparklesIcon className="h-6 w-6 text-blue-500" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -1185,7 +1185,7 @@ const DashboardPage: React.FC = () => {
                       key={query._id}
                       className="flex items-start space-x-4 p-4 rounded-lg border border-gray-200"
                     >
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg flex items-center justify-center">
                         <DocumentTextIcon className="h-6 w-6 text-blue-500" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -1219,7 +1219,7 @@ const DashboardPage: React.FC = () => {
                       className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 hover:border-blue-500 cursor-pointer transition-colors"
                       onClick={() => router.push(`/solutions/${solution._id}`)}
                     >
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg flex items-center justify-center">
                         <SparklesIcon className="h-5 w-5 text-blue-500" />
                       </div>
                       <div className="flex-1 min-w-0">

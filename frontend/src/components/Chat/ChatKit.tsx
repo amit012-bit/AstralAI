@@ -88,7 +88,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
         // Add welcome message with grid layout
         const welcomeMessage: ChatMessage = {
           role: 'assistant',
-          content: `👋 Hello! I'm **Agent**, your AI assistant for AstralAI. I can help you discover AI solutions, understand technologies, and connect with verified vendors.`,
+          content: `👋 Hello! I'm **Agent**, your AI assistant for AstroVault AI. I can help you discover AI solutions, understand technologies, and connect with verified vendors.`,
           timestamp: new Date().toISOString(),
           showWelcomeGrid: true
         };
@@ -240,7 +240,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
       // Reset to welcome message
       const welcomeMessage: ChatMessage = {
         role: 'assistant',
-        content: `👋 Hello! I'm **Agent**, your AI assistant for AstralAI. I can help you discover AI solutions, understand technologies, and connect with verified vendors.`,
+        content: `👋 Hello! I'm **Agent**, your AI assistant for AstroVault AI. I can help you discover AI solutions, understand technologies, and connect with verified vendors.`,
         timestamp: new Date().toISOString(),
         showWelcomeGrid: true
       };
@@ -324,11 +324,11 @@ const ChatKit: React.FC<ChatKitProps> = ({
           transition={{ delay: 0.1 }}
           className="relative group h-full"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-indigo-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
           <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Example Questions
               </h4>
             </div>
@@ -345,7 +345,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 + idx * 0.1 }}
                   onClick={() => setInputMessage(question)}
-                  className="w-full text-left bg-gradient-to-r from-gray-800/60 to-gray-700/60 hover:from-blue-500/20 hover:to-purple-500/20 text-gray-200 hover:text-white text-xs px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 border border-gray-600/30 hover:border-blue-400/50"
+                  className="w-full text-left bg-gradient-to-r from-gray-800/60 to-gray-700/60 hover:from-purple-600/20 hover:to-blue-600/20 text-gray-200 hover:text-white text-xs px-4 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 border border-gray-600/30 hover:border-purple-400/50"
                 >
                   {question}
                 </motion.button>
@@ -361,11 +361,11 @@ const ChatKit: React.FC<ChatKitProps> = ({
           transition={{ delay: 0.2 }}
           className="relative group h-full"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-red-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-indigo-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
           <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 hover:bg-black/50 h-full flex flex-col">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-              <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h4 className="text-white font-semibold text-sm bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 What Agent Can Do
               </h4>
             </div>
@@ -383,7 +383,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
                   transition={{ delay: 0.3 + idx * 0.1 }}
                   className="flex items-start space-x-3"
                 >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <SparklesIcon className="h-3 w-3 text-white" />
                   </div>
                   <span className="text-gray-300 text-xs leading-relaxed">{capability}</span>
@@ -462,7 +462,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
           {/* Hover Tooltip */}
           <div className="absolute right-0 top-full mt-2 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
             <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg border border-gray-700">
-              Trusted Solution by AstralAI
+              Trusted Solution by AstroVault AI
               <div className="absolute -top-1 right-3 w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-gray-700"></div>
             </div>
           </div>
@@ -526,7 +526,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
           <div className="flex items-center space-x-2">
             <AIAvatar size="sm" />
             <div>
-              <h3 className="text-sm font-semibold text-white">AstralAI Agent</h3>
+              <h3 className="text-sm font-semibold text-white">AstroVault AI Agent</h3>
               <p className="text-xs text-gray-300">
                 {agentStatus === 'online' ? 'Online' : 
                  agentStatus === 'offline' ? 'Offline' : 'Connecting...'}
@@ -576,7 +576,7 @@ const ChatKit: React.FC<ChatKitProps> = ({
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     message.role === 'user' 
                       ? 'bg-primary-500' 
-                      : 'bg-gradient-to-br from-primary-500 to-accent-500'
+                      : 'bg-gradient-to-br from-purple-600 to-blue-600'
                   }`}>
                     {message.role === 'user' ? (
                       <UserIcon className="h-4 w-4 text-white" />

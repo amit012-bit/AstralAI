@@ -27,11 +27,11 @@ const ChatPage: React.FC = () => {
   };
 
   return (
-    <Layout title="AstralAI Agent" 
+    <Layout title="AstroVault AI Agent" 
     // subtitle="Get personalized AI solution recommendations, expert insights, and instant answers to your questions about AI technologies and vendors."
     >
       <Head>
-        <title>AI Agent - AstralAI</title>
+        <title>AI Agent - AstroVault AI</title>
         <meta name="description" content="Interact with our AI agent to discover solutions, get recommendations, and find the perfect AI tools for your business." />
       </Head>
 

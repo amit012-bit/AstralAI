@@ -152,7 +152,7 @@ const ProposalDetailPage: React.FC = () => {
   return (
     <Layout title="Proposal Details">
       <Head>
-        <title>{proposal.title} - AstralAI</title>
+        <title>{proposal.title} - AstroVault AI</title>
       </Head>
 
       <div className="min-h-screen bg-white">

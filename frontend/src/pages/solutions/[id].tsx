@@ -259,7 +259,7 @@ const SolutionDetailPage: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>{solution.title} - AstralAI</title>
+        <title>{solution.title} - AstroVault AI</title>
         <meta name="description" content={solution.shortDescription} />
       </Head>
       
@@ -272,9 +272,9 @@ const SolutionDetailPage: React.FC = () => {
           </div>
           
           {/* Background Pattern */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-cyan-600/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 via-blue-600/10 to-indigo-600/10"></div>
           <div className="absolute inset-0 opacity-20">
-            <div className="w-full h-full bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
+            <div className="w-full h-full bg-gradient-to-r from-purple-600/5 to-blue-600/5"></div>
           </div>
           
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -309,13 +309,13 @@ const SolutionDetailPage: React.FC = () => {
 
               {/* Key Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-                <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl p-6 border border-blue-500/30 backdrop-blur-sm">
+                <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-xl p-6 border border-purple-600/30 backdrop-blur-sm">
                   <div className="text-3xl font-bold text-blue-400 mb-2">
                     {solution.rating?.average || '4.8'}
                   </div>
                   <div className="text-gray-300 text-sm">Rating</div>
                 </div>
-                <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-6 border border-purple-500/30 backdrop-blur-sm">
+                <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-xl p-6 border border-purple-600/30 backdrop-blur-sm">
                   <div className="text-3xl font-bold text-purple-400 mb-2">
                     {solution.views?.toLocaleString() || '2.3K'}
                   </div>
@@ -345,7 +345,7 @@ const SolutionDetailPage: React.FC = () => {
               <div className="bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded-2xl p-8 border border-gray-600/50 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
                       <span className="text-white font-bold text-xl">
                         {solution.vendor?.company?.charAt(0) || 'C'}
                       </span>
@@ -386,7 +386,7 @@ const SolutionDetailPage: React.FC = () => {
                 {/* Description */}
                 <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/50 rounded-2xl p-8 border border-gray-600/50 backdrop-blur-sm">
                   <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center mr-3">
                       <span className="text-white text-sm">📋</span>
                     </div>
                     About This Solution

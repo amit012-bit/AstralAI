@@ -20,7 +20,7 @@ const AIAvatar: React.FC<AIAvatarProps> = ({ className = '', size = 'md' }) => {
   return (
     <div className={`${sizeClasses[size]} ${className} relative`}>
       {/* Avatar Container */}
-      <div className="w-full h-full bg-gradient-to-br from-purple-500 via-pink-500 to-rose-400 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+      <div className="w-full h-full bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
         {/* Professional Woman Avatar SVG */}
         <svg
           viewBox="0 0 100 100"
@@ -107,7 +107,7 @@ const AIAvatar: React.FC<AIAvatarProps> = ({ className = '', size = 'md' }) => {
       </div>
       
       {/* Subtle glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-sm -z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-blue-400/20 rounded-full blur-sm -z-10"></div>
     </div>
   );
 };
