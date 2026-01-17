@@ -20,70 +20,50 @@ export function SolutionsSearchBar({ value, onChange, onSubmit }: SolutionsSearc
 
   return (
     <div className="w-full max-w-3xl">
-      <div className="flex items-center gap-4 rounded-full border border-zinc-200 bg-zinc-50 px-5 py-4 shadow-[0_15px_40px_-20px_rgba(15,23,42,0.4)]">
-        <button
-          type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-900 transition hover:bg-zinc-50"
-        >
-          +
-        </button>
+      {/* Single container with input and button inside */}
+      <div className="relative flex items-center rounded-full border border-gray-300 bg-white px-4 py-3 focus-within:outline-none">
+        {/* Input Field */}
         <input
           id="solutions-search"
           type="search"
-          placeholder="Search your health care solutions"
+          placeholder="I'm looking for AI solutions that automate medical diagnostics..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyPress={handleKeyPress}
-          className="flex-1 bg-transparent text-lg font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-0 focus:border-0"
-          style={{ 
-            outline: 'none',
-            border: 'none'
-          }}
-          onFocus={(e) => {
-            e.target.style.outline = '2px solid black';
-            e.target.style.outlineOffset = '2px';
-          }}
-          onBlur={(e) => {
-            e.target.style.outline = 'none';
-          }}
+          className="flex-1 border-0 bg-transparent pr-3 text-base font-normal text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
         />
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Voice search"
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-zinc-900 shadow-sm transition hover:bg-zinc-50"
+        {/* AI Search Button Inside - Full Height */}
+        <button
+          type="button"
+          aria-label="AI Search"
+          onClick={handleSubmit}
+          disabled={!value.trim()}
+          className="flex h-full items-center gap-2 rounded-full bg-gray-700 px-6 py-3 text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-700"
+        >
+          {/* Magic Wand Icon with Stars */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="h-5 w-5"
-            >
-              <path d="M12 3a3 3 0 0 0-3 3v4a3 3 0 1 0 6 0V6a3 3 0 0 0-3-3Z" />
-              <path d="M5 11a7 7 0 0 0 14 0" />
-              <path d="M12 18v3" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            aria-label="Search submit"
-            onClick={handleSubmit}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-900 text-white transition hover:bg-zinc-800"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="h-5 w-5"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+            {/* Wand stick */}
+            <line x1="4" y1="12" x2="17" y2="12" stroke="currentColor" strokeWidth="2.5" />
+            {/* Star tip with sparks */}
+            <path d="M17 12l5-2-5-2" fill="none" stroke="currentColor" />
+            <path d="M17 12l5 2-5 2" fill="none" stroke="currentColor" />
+            <circle cx="20" cy="8" r="1" fill="currentColor" />
+            <circle cx="20" cy="12" r="1" fill="currentColor" />
+            <circle cx="20" cy="16" r="1" fill="currentColor" />
+            <path d="M22 10l1-1m-1 1l1 1" stroke="currentColor" />
+            <path d="M22 14l1-1m-1 1l1 1" stroke="currentColor" />
+          </svg>
+          <span className="text-base font-medium uppercase">AI Search</span>
+        </button>
       </div>
     </div>
   );

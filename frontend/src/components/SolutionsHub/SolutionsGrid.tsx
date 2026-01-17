@@ -462,7 +462,7 @@ export function SolutionsGrid() {
   };
 
   return (
-    <div className="fixed inset-0 bg-white overflow-hidden" style={{ width: "100vw", height: "100vh" }}>
+    <div className="fixed inset-0 bg-transparent overflow-hidden" style={{ width: "100vw", height: "100vh" }}>
       {/* Sidebar - Only visible when opened */}
       {isSidebarOpen && (
         <>
@@ -494,7 +494,7 @@ export function SolutionsGrid() {
 
       {/* Main Content Area - Full width when sidebar is closed */}
       <main 
-        className="fixed inset-0 bg-white transition-all duration-300" 
+        className="fixed inset-0 bg-transparent transition-all duration-300" 
         style={{ 
           left: `${sidebarWidth}px`,
           width: `calc(100vw - ${sidebarWidth}px)`,
@@ -507,7 +507,7 @@ export function SolutionsGrid() {
       >
         <ScrollableGrid ref={scrollContainerRef}>
         <div
-          className="solutions-grid grid border-t border-l border-r border-b border-zinc-600 p-0 m-0"
+          className="solutions-grid grid border-t border-l border-r border-b border-gray-900 p-0 m-0"
           style={{
             gridTemplateColumns: "repeat(12, 1fr)",
             gridAutoRows: "minmax(calc(33.33vh / 2), auto)",

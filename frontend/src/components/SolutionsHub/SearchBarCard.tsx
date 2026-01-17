@@ -16,7 +16,7 @@ export function SearchBarCard({ cols, rows, searchValue, onSearchChange, onSearc
   return (
     <article
       id="search-bar-card"
-      className="group relative flex flex-col items-center justify-center border border-zinc-600 bg-white p-4 transition-all duration-500 hover:bg-zinc-50"
+      className="group relative flex flex-col items-center justify-center border border-gray-900 bg-transparent p-4 transition-all duration-500"
       style={{
         gridColumnStart: startCol,
         gridColumnEnd: startCol + cols,
@@ -31,16 +31,16 @@ export function SearchBarCard({ cols, rows, searchValue, onSearchChange, onSearc
     >
       <div className="flex flex-col items-center gap-3 w-full">
         <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-zinc-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gray-400">
             Solutions Hub
           </p>
-          <h1 className="text-2xl font-light sm:text-3xl text-zinc-900">What can I help with?</h1>
+          <h1 className="text-2xl font-light sm:text-3xl text-white">What can I help with?</h1>
         </div>
         <SolutionsSearchBar value={searchValue} onChange={onSearchChange} onSubmit={onSearchSubmit} />
         {noMatchMessage && searchValue.trim() !== "" && (
           <div className="mt-4 text-center">
-            <p className="text-sm text-zinc-600">
-              No exact match for your asked solution please enter to go through deep search.
+            <p className="text-sm text-gray-300">
+            No exact match for your asked solution. Please click on AI Search for the deep search.
             </p>
           </div>
         )}
