@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Turbopack configuration (for Next.js 16+)
-  turbopack: {},
-  
   // Image optimization configuration
   images: {
     domains: [

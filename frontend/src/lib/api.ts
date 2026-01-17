@@ -50,6 +50,7 @@ api.interceptors.response.use(
 
     const { status, data } = error.response;
     const errorMessage = (data as any)?.message || 'An error occurred';
+    const errorMessageLower = (errorMessage as string).toLowerCase();
 
     switch (status) {
       case 401:
@@ -66,6 +67,16 @@ api.interceptors.response.use(
       case 404:
         toast.error('Resource not found.');
         break;
+      case 400:
+        // For 400 errors, check if it's a vendor profile error - let components handle it
+        // Otherwise show generic error
+        if (errorMessageLower.includes('vendor profile not found') || 
+            errorMessageLower.includes('create a vendor profile')) {
+          // Don't show toast here - let the component handle it with custom UI
+          break;
+        }
+        toast.error(errorMessage);
+        break;
       case 422:
         // Validation errors
         const validationErrors = (data as any)?.errors;
@@ -78,7 +89,14 @@ api.interceptors.response.use(
         }
         break;
       case 429:
-        toast.error('Too many requests. Please try again later.');
+        // Don't show toast for every 429 error to avoid spam
+        // Only show if it's a user-initiated action (login, etc.)
+        const isUserAction = error.config?.method === 'post' && 
+          (error.config?.url?.includes('/auth/login') || 
+           error.config?.url?.includes('/auth/register'));
+        if (isUserAction) {
+          toast.error('Too many requests. Please try again later.');
+        }
         break;
       case 500:
         toast.error('Server error. Please try again later.');
@@ -468,6 +486,44 @@ export const proposalsApi = {
   // Update response status (accept/reject)
   updateResponseStatus: async (proposalId: string, responseId: string, status: 'accepted' | 'rejected' | 'pending') => {
     const response = await api.put<ApiResponse>(`/proposals/${proposalId}/responses/${responseId}`, { status });
+    return response.data;
+  },
+
+  // Update response content
+  updateResponse: async (proposalId: string, responseId: string, responseData: {
+    solutionId?: string;
+    proposalText: string;
+    proposedPrice?: string;
+    proposedTimeline?: string;
+    caseStudyLink?: string;
+    attachments?: Array<{
+      name: string;
+      type: string;
+      url?: string;
+    }>;
+  }) => {
+    const response = await api.put<ApiResponse>(`/proposals/${proposalId}/responses/${responseId}/update`, responseData);
+    return response.data;
+  },
+};
+
+// Data Fields API functions
+export const dataFieldsApi = {
+  // Get all available data fields
+  getAllFields: async (params?: { category?: string; section?: string; isActive?: boolean }) => {
+    const response = await api.get<ApiResponse>('/data-fields', { params });
+    return response.data;
+  },
+
+  // Get fields mapped to a vendor
+  getVendorFields: async (vendorId: string) => {
+    const response = await api.get<ApiResponse>(`/data-fields/vendor/${vendorId}`);
+    return response.data;
+  },
+
+  // Update vendor field mappings
+  updateVendorMappings: async (vendorId: string, fieldIds: string[]) => {
+    const response = await api.post<ApiResponse>(`/data-fields/vendor/${vendorId}/mappings`, { fieldIds });
     return response.data;
   },
 };

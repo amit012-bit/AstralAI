@@ -11,6 +11,7 @@ interface ParseWebsiteSectionProps {
   isParsing: boolean;
   parseError: string | null;
   parsedData: any;
+  onSkip?: () => void;
 }
 
 export const ParseWebsiteSection: React.FC<ParseWebsiteSectionProps> = ({
@@ -18,6 +19,7 @@ export const ParseWebsiteSection: React.FC<ParseWebsiteSectionProps> = ({
   isParsing,
   parseError,
   parsedData,
+  onSkip,
 }) => {
   const [url, setUrl] = useState('');
 
@@ -108,6 +110,20 @@ export const ParseWebsiteSection: React.FC<ParseWebsiteSectionProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Skip and Fill Manually Option */}
+          {onSkip && (
+            <div className="pt-2 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={onSkip}
+                disabled={isParsing}
+                className="w-full py-2.5 px-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                Skip and fill manually
+              </button>
+            </div>
+          )}
         </form>
       ) : (
         <div className="bg-green-50 border border-green-200 rounded-lg p-6">

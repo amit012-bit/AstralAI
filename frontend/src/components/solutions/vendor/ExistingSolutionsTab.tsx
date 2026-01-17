@@ -13,9 +13,10 @@ import {
   PencilIcon, 
   TrashIcon,
   EyeIcon,
-  SparklesIcon,
-  XMarkIcon
+  SparklesIcon
 } from '@heroicons/react/24/outline';
+import { DeleteConfirmationModal } from '../../common/DeleteConfirmationModal';
+import { EditSolutionModal } from './EditSolutionModal';
 
 interface Solution {
   _id: string;
@@ -45,8 +46,9 @@ export const ExistingSolutionsTab: React.FC<ExistingSolutionsTabProps> = ({ onSo
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingSolution, setEditingSolution] = useState<Solution | null>(null);
-  const [editFormData, setEditFormData] = useState<any>(null);
-  const [saving, setSaving] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [solutionToDelete, setSolutionToDelete] = useState<{ id: string; title: string } | null>(null);
 
   // Fetch vendor's solutions
   useEffect(() => {
@@ -83,19 +85,22 @@ export const ExistingSolutionsTab: React.FC<ExistingSolutionsTabProps> = ({ onSo
     }
   };
 
-  const handleDelete = async (solutionId: string, solutionTitle: string) => {
-    if (!confirm(`Are you sure you want to delete "${solutionTitle}"? This action cannot be undone.`)) {
-      return;
-    }
+  const handleDelete = (solutionId: string, solutionTitle: string) => {
+    setSolutionToDelete({ id: solutionId, title: solutionTitle });
+    setShowDeleteModal(true);
+  };
 
-    setDeletingId(solutionId);
+  const confirmDelete = async () => {
+    if (!solutionToDelete) return;
+
+    setDeletingId(solutionToDelete.id);
     try {
-      const response = await solutionsApi.deleteSolution(solutionId);
+      const response = await solutionsApi.deleteSolution(solutionToDelete.id);
       
       if (response.success) {
         toast.success('Solution deleted successfully');
         // Remove from local state immediately for better UX
-        const updatedSolutions = solutions.filter(s => s._id !== solutionId);
+        const updatedSolutions = solutions.filter(s => s._id !== solutionToDelete.id);
         setSolutions(updatedSolutions);
         // Update count in parent
         if (onSolutionsCountChange) {
@@ -103,6 +108,8 @@ export const ExistingSolutionsTab: React.FC<ExistingSolutionsTabProps> = ({ onSo
         }
         // Refresh to ensure consistency
         setTimeout(() => fetchSolutions(), 100);
+        setShowDeleteModal(false);
+        setSolutionToDelete(null);
       } else {
         toast.error(response.message || 'Failed to delete solution');
       }
@@ -128,52 +135,7 @@ export const ExistingSolutionsTab: React.FC<ExistingSolutionsTabProps> = ({ onSo
 
   const handleEdit = (solution: Solution) => {
     setEditingSolution(solution);
-    setEditFormData({
-      title: solution.title,
-      shortDescription: solution.shortDescription,
-      description: solution.description,
-      category: solution.category,
-      industry: solution.industry,
-      pricing: solution.pricing || {
-        price: 0,
-        currency: 'USD',
-        billingCycle: 'monthly'
-      }
-    });
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editingSolution || !editFormData) return;
-
-    setSaving(true);
-    try {
-      const response = await solutionsApi.updateSolution(editingSolution._id, editFormData);
-      
-      if (response.success) {
-        toast.success('Solution updated successfully');
-        setEditingSolution(null);
-        setEditFormData(null);
-        fetchSolutions(); // Refresh the list
-      } else {
-        toast.error(response.message || 'Failed to update solution');
-      }
-    } catch (error: any) {
-      console.error('Error updating solution:', error);
-      let errorMessage = 'Failed to update solution';
-      if (error.response?.data?.error) {
-        const errorData = error.response.data.error;
-        if (typeof errorData === 'string') {
-          errorMessage = errorData;
-        } else if (errorData?.message) {
-          errorMessage = errorData.message;
-        }
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      toast.error(errorMessage);
-    } finally {
-      setSaving(false);
-    }
+    setShowEditModal(true);
   };
 
   const filteredSolutions = solutions.filter(solution =>
@@ -299,180 +261,38 @@ export const ExistingSolutionsTab: React.FC<ExistingSolutionsTabProps> = ({ onSo
         </div>
       )}
 
-      {/* Edit Modal */}
-      {editingSolution && editFormData && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setEditingSolution(null)} />
-          <div className="flex min-h-full items-center justify-center p-4">
-            <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              {/* Header */}
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-gray-900">Edit Solution</h2>
-                  <button
-                    onClick={() => setEditingSolution(null)}
-                    className="text-gray-400 hover:text-gray-500"
-                  >
-                    <XMarkIcon className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
+      {/* Edit Solution Modal */}
+      {editingSolution && (
+        <EditSolutionModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingSolution(null);
+          }}
+          onSuccess={() => {
+            fetchSolutions();
+            setShowEditModal(false);
+            setEditingSolution(null);
+          }}
+          solution={editingSolution}
+        />
+      )}
 
-              {/* Form */}
-              <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }} className="p-6 space-y-4">
-                {/* Title */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Title *
-                  </label>
-                  <input
-                    type="text"
-                    value={editFormData.title}
-                    onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-
-                {/* Short Description */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Short Description *
-                  </label>
-                  <textarea
-                    value={editFormData.shortDescription}
-                    onChange={(e) => setEditFormData({ ...editFormData, shortDescription: e.target.value })}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-
-                {/* Description */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Description *
-                  </label>
-                  <textarea
-                    value={editFormData.description}
-                    onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                    rows={6}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-
-                {/* Category and Industry */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category *
-                    </label>
-                    <input
-                      type="text"
-                      value={editFormData.category}
-                      onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Industry *
-                    </label>
-                    <input
-                      type="text"
-                      value={editFormData.industry}
-                      onChange={(e) => setEditFormData({ ...editFormData, industry: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Pricing */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Price
-                    </label>
-                    <input
-                      type="number"
-                      value={editFormData.pricing?.price || 0}
-                      onChange={(e) => setEditFormData({
-                        ...editFormData,
-                        pricing: { ...editFormData.pricing, price: parseFloat(e.target.value) || 0 }
-                      })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Currency
-                    </label>
-                    <select
-                      value={editFormData.pricing?.currency || 'USD'}
-                      onChange={(e) => setEditFormData({
-                        ...editFormData,
-                        pricing: { ...editFormData.pricing, currency: e.target.value }
-                      })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="USD">USD</option>
-                      <option value="EUR">EUR</option>
-                      <option value="GBP">GBP</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Billing Cycle
-                    </label>
-                    <select
-                      value={editFormData.pricing?.billingCycle || 'monthly'}
-                      onChange={(e) => setEditFormData({
-                        ...editFormData,
-                        pricing: { ...editFormData.pricing, billingCycle: e.target.value }
-                      })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="monthly">Monthly</option>
-                      <option value="yearly">Yearly</option>
-                      <option value="one-time">One-time</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
-                  <button
-                    type="button"
-                    onClick={() => setEditingSolution(null)}
-                    className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
-                    disabled={saving}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    disabled={saving}
-                  >
-                    {saving ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Saving...
-                      </>
-                    ) : (
-                      'Save Changes'
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      {/* Delete Confirmation Modal */}
+      {solutionToDelete && (
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => {
+            setShowDeleteModal(false);
+            setSolutionToDelete(null);
+          }}
+          onConfirm={confirmDelete}
+          title="Delete Solution"
+          message={`Are you sure you want to delete "${solutionToDelete.title}"? This action cannot be undone and the solution will be permanently removed from your portfolio.`}
+          confirmText="Delete"
+          cancelText="Cancel"
+          loading={deletingId === solutionToDelete.id}
+        />
       )}
     </div>
   );

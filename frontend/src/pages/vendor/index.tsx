@@ -10,7 +10,7 @@ import Layout from '../../components/Layout/Layout';
 import { useAuth } from '../../contexts/AuthContext';
 import { VendorTab } from '../../components/solutions/vendor/VendorTab';
 import { ExistingSolutionsTab } from '../../components/solutions/vendor/ExistingSolutionsTab';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 const VendorPage: React.FC = () => {
   const router = useRouter();
@@ -88,17 +88,26 @@ const VendorPage: React.FC = () => {
                   Parse New Solutions
                 </button>
               </nav>
-              {/* Search Bar - Only show for Existing Solutions tab */}
+              {/* Search Bar and Add New Button - Only show for Existing Solutions tab */}
               {activeTab === 'existing' && (
-                <div className="relative max-w-xs">
-                  <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search solutions..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                  />
+                <div className="flex items-center gap-3">
+                  <div className="relative max-w-xs">
+                    <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search your products..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    />
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('parse')}
+                    className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 text-sm font-medium"
+                  >
+                    <PlusIcon className="w-4 h-4" />
+                    Add new
+                  </button>
                 </div>
               )}
             </div>

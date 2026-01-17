@@ -237,6 +237,43 @@ proposalSchema.methods.updateResponseStatus = async function(responseId, status)
 };
 
 /**
+ * Update response content
+ * @param {string} responseId - Response ID
+ * @param {Object} updateData - Data to update
+ */
+proposalSchema.methods.updateResponse = async function(responseId, updateData) {
+  const response = this.responses.id(responseId);
+  if (!response) {
+    throw new Error('Response not found');
+  }
+  
+  // Update fields
+  if (updateData.solutionId !== undefined) {
+    response.solutionId = updateData.solutionId;
+  }
+  if (updateData.proposalText !== undefined) {
+    response.proposalText = updateData.proposalText;
+  }
+  if (updateData.proposedPrice !== undefined) {
+    response.proposedPrice = updateData.proposedPrice;
+  }
+  if (updateData.proposedTimeline !== undefined) {
+    response.proposedTimeline = updateData.proposedTimeline;
+  }
+  if (updateData.caseStudyLink !== undefined) {
+    response.caseStudyLink = updateData.caseStudyLink;
+  }
+  if (updateData.attachments !== undefined) {
+    response.attachments = updateData.attachments;
+  }
+  
+  response.updatedAt = new Date();
+  await this.save();
+  
+  return response;
+};
+
+/**
  * Increment views count
  */
 proposalSchema.methods.incrementViews = async function() {

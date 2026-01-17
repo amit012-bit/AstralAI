@@ -126,46 +126,36 @@ export const ProductsListSection: React.FC<ProductsListSectionProps> = ({
     }
   };
 
-  if (products.length === 0) {
-    return (
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h3 className="text-2xl font-bold text-gray-900">Products List</h3>
-          <p className="text-sm text-gray-600">
-            No products found. You can add products manually or parse a website to extract products.
-          </p>
-        </div>
-        <button
-          onClick={onAddProduct}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-        >
-          <PlusIcon className="h-5 w-5" /> Add Product
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h3 className="text-xl font-bold text-gray-900">Products List</h3>
-          <p className="text-sm text-gray-600">
-            {products.length} product{products.length !== 1 ? 's' : ''} found. Review and save each as a solution.
-          </p>
-        </div>
-        <button
-          onClick={onAddProduct}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm"
-        >
-          <PlusIcon className="w-4 h-4" />
-          Add Product
-        </button>
-      </div>
-
       {/* Products Grid - Classic Card View */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {products.map((product, index) => (
+      {products.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12 px-4">
+          <div className="text-center">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
+            </svg>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">No products listed</h3>
+            <p className="mt-2 text-sm text-gray-500">
+              Get started by adding a new product to your list.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {products.map((product, index) => (
           <div
             key={product._id || index}
             className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all overflow-hidden"
@@ -339,7 +329,8 @@ export const ProductsListSection: React.FC<ProductsListSectionProps> = ({
             )}
           </div>
         ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

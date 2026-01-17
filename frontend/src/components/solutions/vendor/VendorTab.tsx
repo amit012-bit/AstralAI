@@ -7,13 +7,17 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { ParseWebsiteSection } from './ParseWebsiteSection';
 import { VendorDetailsSection } from './VendorDetailsSection';
 import { ProductsListSection } from './ProductsListSection';
+import { AddProductModal } from './AddProductModal';
+import { ManageSectionsModal } from './ManageSectionsModal';
 import { useVendorParsing, ParsedVendorData } from '../../../hooks/useVendorParsing';
 import { vendorApi } from '../../../lib/api';
 import { toast } from 'react-hot-toast';
 import { 
   GlobeAltIcon, 
   BuildingStorefrontIcon, 
-  ClipboardDocumentCheckIcon 
+  ClipboardDocumentCheckIcon,
+  PlusIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 
 interface VendorTabProps {
@@ -70,6 +74,9 @@ export const VendorTab: React.FC<VendorTabProps> = ({ onComplete }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeSection, setActiveSection] = useState<number>(1);
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [showManageSectionsModal, setShowManageSectionsModal] = useState(false);
+  const [vendorFieldsRefreshTrigger, setVendorFieldsRefreshTrigger] = useState(0);
 
   // Section navigation items with icons
   const sections = [
@@ -215,45 +222,72 @@ export const VendorTab: React.FC<VendorTabProps> = ({ onComplete }) => {
     <div className="w-full">
       {/* Section Navigation - Horizontal Bar with Icons */}
       <div className="bg-gray-50 border-b border-gray-200 mb-4">
-        <div className="flex items-center">
-          {sections.map((section, index) => {
-            const Icon = section.icon;
-            const isActive = activeSection === section.id;
-            const isDisabled = section.id > 1 && !parsedData;
-            
-            return (
-              <React.Fragment key={section.id}>
-                <button
-                  onClick={() => !isDisabled && setActiveSection(section.id)}
-                  disabled={isDisabled}
-                  className={`
-                    relative flex items-center gap-2 px-4 py-3 font-medium transition-all
-                    ${isActive 
-                      ? 'bg-blue-600 text-white' 
-                      : isDisabled
-                      ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-gray-600 hover:bg-gray-100'
-                    }
-                    ${isActive && index < sections.length - 1 ? 'pr-6' : ''}
-                  `}
-                  style={{
-                    clipPath: isActive && index < sections.length - 1 
-                      ? 'polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%)'
-                      : 'none'
-                  }}
-                >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-current'}`} />
-                  <span>{section.name}</span>
-                  {isActive && index < sections.length - 1 && (
-                    <div className="absolute right-0 top-0 bottom-0 w-0 h-0 border-l-[12px] border-l-blue-600 border-t-[24px] border-t-transparent border-b-[24px] border-b-transparent" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            {sections.map((section, index) => {
+              const Icon = section.icon;
+              const isActive = activeSection === section.id;
+              
+              return (
+                <React.Fragment key={section.id}>
+                  <button
+                    onClick={() => setActiveSection(section.id)}
+                    className={`
+                      relative flex items-center gap-2 px-4 py-3 font-medium transition-all
+                      ${isActive 
+                        ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white' 
+                        : 'text-gray-600 hover:bg-gray-100'
+                      }
+                      ${isActive && index < sections.length - 1 ? 'pr-6' : ''}
+                    `}
+                    style={{
+                      clipPath: isActive && index < sections.length - 1 
+                        ? 'polygon(0% 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 0% 100%)'
+                        : 'none'
+                    }}
+                  >
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-current'}`} />
+                    <span>{section.name}</span>
+                    {isActive && index < sections.length - 1 && (
+                      <div className="absolute right-0 top-0 bottom-0 w-0 h-0 border-l-[12px] border-l-purple-600 border-t-[24px] border-t-transparent border-b-[24px] border-b-transparent" />
+                    )}
+                  </button>
+                  {index < sections.length - 1 && (
+                    <div className="h-8 w-px bg-gray-300" />
                   )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+          {/* Action Buttons - Show based on active section */}
+          <div className="flex items-center gap-2 mr-4">
+            {activeSection === 2 && (
+              <>
+                <button
+                  onClick={() => setShowManageSectionsModal(true)}
+                  className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 text-sm font-medium"
+                >
+                  <Cog6ToothIcon className="w-4 h-4" />
+                  Manage Sections
                 </button>
-                {index < sections.length - 1 && (
-                  <div className="h-8 w-px bg-gray-300" />
-                )}
-              </React.Fragment>
-            );
-          })}
+                <button
+                  onClick={handleSaveVendorDetails}
+                  className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 text-sm font-medium"
+                >
+                  Save
+                </button>
+              </>
+            )}
+            {activeSection === 3 && (
+              <button
+                onClick={() => setShowAddProductModal(true)}
+                className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 transition-all duration-200 text-sm font-medium"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Add New
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -266,30 +300,23 @@ export const VendorTab: React.FC<VendorTabProps> = ({ onComplete }) => {
             isParsing={isParsing}
             parseError={parseError}
             parsedData={parsedData}
+            onSkip={() => setActiveSection(2)}
           />
         )}
 
         {/* Section 2: Vendor Details */}
-        {activeSection === 2 && parsedData && (
+        {activeSection === 2 && (
           <div className="w-full">
             <VendorDetailsSection
               vendorData={vendorDetails}
               onChange={handleVendorDetailsChange}
               errors={errors}
             />
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={handleSaveVendorDetails}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
-              >
-                Save Vendor Details
-              </button>
-            </div>
           </div>
         )}
 
         {/* Section 3: Products List */}
-        {activeSection === 3 && parsedData && (
+        {activeSection === 3 && (
           <ProductsListSection
             products={products}
             vendorContactInfo={{
@@ -301,22 +328,31 @@ export const VendorTab: React.FC<VendorTabProps> = ({ onComplete }) => {
             onAddProduct={handleAddProduct}
           />
         )}
-
-        {/* Help text when no data parsed yet */}
-        {activeSection !== 1 && !parsedData && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 text-center">
-            <p className="text-yellow-800 text-sm">
-              Please parse a website first to extract vendor information and products.
-            </p>
-            <button
-              onClick={() => setActiveSection(1)}
-              className="mt-3 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors text-sm"
-            >
-              Go to Parse Website
-            </button>
-          </div>
-        )}
       </div>
+
+      {/* Add Product Modal - Managed by parent */}
+      <AddProductModal
+        isOpen={showAddProductModal}
+        onClose={() => setShowAddProductModal(false)}
+        onSave={(product) => {
+          const newProduct: Product = {
+            ...product,
+            _id: `product-${Date.now()}-${products.length}`,
+            _saved: false,
+          };
+          handleUpdateProduct(products.length, newProduct);
+          setShowAddProductModal(false);
+        }}
+      />
+
+      {/* Manage Sections Modal */}
+      <ManageSectionsModal
+        isOpen={showManageSectionsModal}
+        onClose={() => setShowManageSectionsModal(false)}
+        onSuccess={() => {
+          setVendorFieldsRefreshTrigger(prev => prev + 1);
+        }}
+      />
     </div>
   );
 };

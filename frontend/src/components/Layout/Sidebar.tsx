@@ -70,13 +70,14 @@ const Sidebar: React.FC<SidebarProps> = ({
     //   badge: null,
     //   requiresAuth: false
     // },
-    { 
-      name: 'Queries', 
-      href: '/queries', 
-      icon: DocumentTextIcon,
-      badge: null,
-      requiresAuth: true
-    },
+    // Queries - Hidden for now
+    // { 
+    //   name: 'Queries', 
+    //   href: '/queries', 
+    //   icon: DocumentTextIcon,
+    //   badge: null,
+    //   requiresAuth: true
+    // },
     { 
       name: 'My Vault', 
       href: '/vendor', 
@@ -230,7 +231,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       transition={{ delay: index * 0.1 }}
                       className={`group relative flex items-center justify-between px-3 py-2 rounded-md transition-all duration-200 ${
                         router.pathname === item.href
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white'
                           : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                       whileHover={{ scale: 1.02 }}

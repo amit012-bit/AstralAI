@@ -12,7 +12,8 @@ const {
   updateProposal,
   deleteProposal,
   addResponse,
-  updateResponseStatus
+  updateResponseStatus,
+  updateResponse
 } = require('../controllers/proposalController');
 
 const { authenticate } = require('../middleware/auth');
@@ -70,6 +71,18 @@ router.put('/:proposalId/responses/:responseId',
   validateObjectId('proposalId'),
   validateObjectId('responseId'),
   updateResponseStatus
+);
+
+/**
+ * @route   PUT /api/proposals/:proposalId/responses/:responseId/update
+ * @desc    Update response content
+ * @access  Private (Response Owner or Superadmin)
+ */
+router.put('/:proposalId/responses/:responseId/update', 
+  authenticate, 
+  validateObjectId('proposalId'),
+  validateObjectId('responseId'),
+  updateResponse
 );
 
 module.exports = router;

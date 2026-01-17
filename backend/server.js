@@ -23,6 +23,7 @@ const vendorRoutes = require('./routes/vendors');
 const userRoutes = require('./routes/user');
 const automationRoutes = require('./routes/automation');
 const proposalRoutes = require('./routes/proposals');
+const dataFieldsRoutes = require('./routes/dataFields');
 
 // Initialize Express app
 const app = express();
@@ -100,6 +101,7 @@ app.use('/api/vendor', vendorRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/automation', automationRoutes);
 app.use('/api/proposals', proposalRoutes);
+app.use('/api/data-fields', dataFieldsRoutes);
 
 // API documentation endpoint
 app.get('/api', (req, res) => {

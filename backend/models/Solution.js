@@ -309,7 +309,10 @@ const solutionSchema = new mongoose.Schema({
 
 // Virtual field for primary image
 solutionSchema.virtual('primaryImage').get(function() {
-  const primaryImg = this.images.find(img => img.isPrimary);
+  if (!this.images || !Array.isArray(this.images) || this.images.length === 0) {
+    return '';
+  }
+  const primaryImg = this.images.find(img => img && img.isPrimary);
   return primaryImg ? primaryImg.url : (this.images[0] ? this.images[0].url : '');
 });
 

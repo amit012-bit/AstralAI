@@ -7,6 +7,7 @@ const Proposal = require('../models/Proposal');
 const User = require('../models/User');
 const Solution = require('../models/Solution');
 const Vendor = require('../models/Vendor');
+const Company = require('../models/Company');
 const { AppError, catchAsync } = require('../middleware/errorHandler');
 
 /**
@@ -70,7 +71,8 @@ const getProposals = catchAsync(async (req, res, next) => {
   const andConditions = [];
 
   // Non-admin users see different views
-  if (req.user.role !== 'superadmin') {
+  // Ensure req.user exists (should be set by auth middleware)
+  if (req.user && req.user.role !== 'superadmin') {
     if (req.user.role === 'customer') {
       // Customers see their own proposals and all active vendor proposals
       andConditions.push({
@@ -269,15 +271,33 @@ const addResponse = catchAsync(async (req, res, next) => {
     return next(new AppError('This proposal is not accepting responses', 400));
   }
 
-  // Get vendor information
-  const vendor = await Vendor.findOne({ userId: user._id });
-  if (!vendor && user.role !== 'superadmin') {
-    return next(new AppError('Vendor profile not found. Please create a vendor profile first.', 400));
+  // Get vendor information - check Vendor document first, then fallback to User/Company
+  let vendor = await Vendor.findOne({ userId: user._id });
+  let vendorCompany = '';
+  
+  // If no Vendor document exists, check if user has a company (vendor with companyId)
+  if (!vendor && user.role === 'vendor') {
+    if (user.companyId) {
+      const company = await Company.findById(user.companyId);
+      if (company) {
+        vendorCompany = company.name || '';
+      } else {
+        // User has companyId but Company doesn't exist - this is a data integrity issue
+        // But we'll still allow submission, just without company name
+        console.warn(`User ${user._id} has companyId ${user.companyId} but Company not found`);
+      }
+    }
+    // If vendor doesn't have companyId, that's fine - they can still submit proposals
+    // The Vendor document check is only for the detailed questionnaire data
+  } else if (!vendor && user.role !== 'vendor' && user.role !== 'superadmin') {
+    return next(new AppError('Only vendors can submit proposal responses', 403));
+  } else if (vendor) {
+    // Use vendor document company name if available
+    vendorCompany = vendor.companyName || '';
   }
 
-  // Get vendor name and company
+  // Get vendor name
   const vendorName = `${user.firstName} ${user.lastName}`;
-  const vendorCompany = vendor?.companyName || '';
 
   const responseData = {
     vendorId: user._id,
@@ -359,6 +379,66 @@ const updateResponseStatus = catchAsync(async (req, res, next) => {
   }
 });
 
+/**
+ * Update response content
+ * @route PUT /api/proposals/:proposalId/responses/:responseId/update
+ * @access Private (Response Owner or Superadmin)
+ */
+const updateResponse = catchAsync(async (req, res, next) => {
+  const { proposalId, responseId } = req.params;
+  const user = req.user;
+
+  const proposal = await Proposal.findById(proposalId);
+
+  if (!proposal) {
+    return next(new AppError('Proposal not found', 404));
+  }
+
+  const response = proposal.responses.id(responseId);
+  if (!response) {
+    return next(new AppError('Response not found', 404));
+  }
+
+  // Check authorization - only the vendor who created the response can update it
+  if (user.role !== 'superadmin' && response.vendorId.toString() !== user._id.toString()) {
+    return next(new AppError('Not authorized to update this response', 403));
+  }
+
+  // Only allow updates if response is still pending or viewed (not shortlisted/rejected)
+  if (response.status === 'shortlisted' || response.status === 'rejected') {
+    return next(new AppError('Cannot update a response that has been shortlisted or rejected', 400));
+  }
+
+  try {
+    const updateData = {
+      solutionId: req.body.solutionId,
+      proposalText: req.body.proposalText,
+      proposedPrice: req.body.proposedPrice,
+      proposedTimeline: req.body.proposedTimeline,
+      caseStudyLink: req.body.caseStudyLink,
+      attachments: req.body.attachments
+    };
+
+    await proposal.updateResponse(responseId, updateData);
+    
+    await proposal.populate('responses.vendorId', 'firstName lastName email');
+    await proposal.populate('responses.solutionId', 'title shortDescription');
+
+    const updatedResponse = proposal.responses.id(responseId);
+
+    res.status(200).json({
+      success: true,
+      message: 'Response updated successfully',
+      response: updatedResponse
+    });
+  } catch (error) {
+    if (error.message === 'Response not found') {
+      return next(new AppError(error.message, 404));
+    }
+    throw error;
+  }
+});
+
 module.exports = {
   createProposal,
   getProposals,
@@ -366,5 +446,6 @@ module.exports = {
   updateProposal,
   deleteProposal,
   addResponse,
-  updateResponseStatus
+  updateResponseStatus,
+  updateResponse
 };

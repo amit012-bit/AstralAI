@@ -29,8 +29,12 @@ import Layout from '@/components/Layout/Layout';
 import { proposalsApi, solutionsApi } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import Head from 'next/head';
-import { CreateProposalModal } from '@/components/proposals/CreateProposalModal';
+import { PostNeedWizard } from '@/components/proposals/PostNeedWizard';
 import { ProposalResponseModal } from '@/components/proposals/ProposalResponseModal';
+import { PostingsTab } from '@/components/proposals/PostingsTab';
+import { VendorResponsesTab } from '@/components/proposals/VendorResponsesTab';
+import { FindWorkTab } from '@/components/proposals/FindWorkTab';
+import { MyProposalsTab } from '@/components/proposals/MyProposalsTab';
 
 // Filter options
 const CATEGORIES = [
@@ -129,6 +133,37 @@ const ProposalsPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showResponseModal, setShowResponseModal] = useState(false);
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
+  // Tab state based on user role
+  const [activeTab, setActiveTab] = useState<'findWork' | 'myPostings' | 'myProposals' | 'postings' | 'vendorResponses'>(
+    user?.role === 'vendor' ? 'findWork' : 'postings'
+  );
+
+  // Dynamic placeholder based on active tab
+  const getSearchPlaceholder = () => {
+    if (user?.role === 'vendor') {
+      switch (activeTab) {
+        case 'findWork':
+          return 'Search opportunities...';
+        case 'myPostings':
+          return 'Search your postings...';
+        case 'myProposals':
+          return 'Search your proposals...';
+        default:
+          return 'Search proposals...';
+      }
+    } else {
+      switch (activeTab) {
+        case 'postings':
+          return 'Search your postings...';
+        case 'vendorResponses':
+          return 'Search vendor responses...';
+        default:
+          return 'Search proposals...';
+      }
+    }
+  };
 
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -148,9 +183,19 @@ const ProposalsPage: React.FC = () => {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  // Fetch proposals
+  // Fetch proposals based on active tab
   const fetchProposals = async () => {
     if (!isAuthenticated) return;
+    
+    // Skip fetching if active tab handles its own data (e.g., FindWorkTab, PostingsTab, etc.)
+    // These tabs manage their own API calls to avoid duplicate requests
+    if ((user?.role === 'vendor' && activeTab === 'findWork') ||
+        (user?.role === 'vendor' && activeTab === 'myPostings') ||
+        (user?.role === 'vendor' && activeTab === 'myProposals') ||
+        (user?.role === 'customer' && activeTab === 'postings') ||
+        (user?.role === 'customer' && activeTab === 'vendorResponses')) {
+      return;
+    }
     
     setLoading(true);
     try {
@@ -159,15 +204,47 @@ const ProposalsPage: React.FC = () => {
         limit: filters.limit,
       };
       
+      // Apply filters
       if (filters.category !== 'All Categories') params.category = filters.category;
       if (filters.industry !== 'All Industries') params.industry = filters.industry;
       if (filters.status !== 'All Status') params.status = filters.status;
-      if (filters.creatorType) params.creatorType = filters.creatorType;
+
+      // Tab-based filtering
+      if (user?.role === 'vendor') {
+        if (activeTab === 'findWork') {
+          // Customer proposals (active only) - vendors can respond to these
+          params.creatorType = 'customer';
+          params.status = 'active';
+        } else if (activeTab === 'myProposals') {
+          // Vendor's own proposals
+          params.createdBy = user._id;
+          params.creatorType = 'vendor';
+        }
+      } else if (user?.role === 'customer') {
+        if (activeTab === 'postings') {
+          // Customer's own proposals
+          params.createdBy = user._id;
+          params.creatorType = 'customer';
+        } else if (activeTab === 'vendorResponses') {
+          // Customer proposals with vendor responses
+          params.createdBy = user._id;
+          params.creatorType = 'customer';
+          // Filter to only show proposals with responses
+          // This would need backend support or client-side filtering
+        }
+      }
 
       const response = await proposalsApi.getProposals(params);
       
       if (response.success) {
-        setProposals(response.proposals || []);
+        let proposalsList = response.proposals || [];
+        
+        // Client-side filter for vendorResponses (proposals with responses)
+        if (activeTab === 'vendorResponses' && user?.role === 'customer') {
+          proposalsList = proposalsList.filter((p: Proposal) => p.responsesCount > 0);
+        }
+        
+        setProposals(proposalsList);
         setTotal(response.total || 0);
         setCurrentPage(response.currentPage || 1);
         setTotalPages(response.totalPages || 1);
@@ -180,9 +257,23 @@ const ProposalsPage: React.FC = () => {
     }
   };
 
+  // Update active tab when user role changes
+  useEffect(() => {
+    if (user?.role === 'vendor') {
+      setActiveTab('findWork');
+    } else if (user?.role === 'customer') {
+      setActiveTab('postings');
+    }
+  }, [user?.role]);
+
+  // Reset filters when tab changes
+  useEffect(() => {
+    setFilters(prev => ({ ...prev, page: 1, creatorType: '' }));
+  }, [activeTab]);
+
   useEffect(() => {
     fetchProposals();
-  }, [filters.page, filters.category, filters.industry, filters.status, filters.creatorType, isAuthenticated]);
+  }, [filters.page, filters.category, filters.industry, filters.status, filters.creatorType, isAuthenticated, activeTab]);
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value, page: 1 }));
@@ -266,154 +357,243 @@ const ProposalsPage: React.FC = () => {
       </Head>
       
       <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          {/* Header Actions */}
-          <div className="mb-4 flex items-center justify-end gap-3">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-2">
+          {/* Tab Navigation with Actions */}
+          <div className="border-b border-gray-200 mb-4">
+            <div className="flex items-center justify-between gap-4">
+              <nav className="-mb-px flex space-x-8">
+                {/* Vendor Sub-tabs */}
+                {user?.role === 'vendor' && (
+                  <>
+                    <button
+                      onClick={() => setActiveTab('findWork')}
+                      className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === 'findWork'
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      Opportunities
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('myPostings')}
+                      className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === 'myPostings'
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      My Postings
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('myProposals')}
+                      className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === 'myProposals'
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      My Proposals
+                    </button>
+                  </>
+                )}
+                
+                {/* Customer Sub-tabs */}
+                {user?.role === 'customer' && (
+                  <>
+                    <button
+                      onClick={() => setActiveTab('postings')}
+                      className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === 'postings'
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      Postings
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('vendorResponses')}
+                      className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === 'vendorResponses'
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      Vendor Responses
+                    </button>
+                  </>
+                )}
+              </nav>
+              {/* Search Bar, Filter Button, Create Button */}
+              <div className="flex items-center gap-3">
                 {/* Search Bar */}
-                <form onSubmit={handleSearch} className="relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <form onSubmit={handleSearch} className="relative flex items-center">
+                  <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search proposals..."
+                    placeholder={getSearchPlaceholder()}
                     value={filters.search}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
-                    className="w-64 pl-9 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-sm"
+                    className="w-64 pl-8 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-gray-900"
                   />
                 </form>
-                {/* Create Proposal Button */}
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 flex items-center gap-2 font-medium shadow-md hover:shadow-lg"
-                >
-                  <PlusIcon className="w-5 h-5" />
-                  Create Proposal
-                </button>
-                {/* Filters Button - Icon Only with Tooltip */}
-                <div className="relative group">
-                  <button
-                    onClick={() => setShowFilters(!showFilters)}
-                    className={`p-2.5 border rounded-xl flex items-center justify-center transition-all ${
-                      showFilters 
-                        ? 'bg-purple-50 border-purple-300 text-purple-700 shadow-sm' 
-                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-sm'
-                    }`}
-                  >
-                    <FunnelIcon className="w-5 h-5" />
-                  </button>
-                  {/* Tooltip */}
-                  <div className="absolute right-0 top-full mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                    <div className="bg-gray-900 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg">
-                      Filter
-                      <div className="absolute right-3 -top-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-                    </div>
-                  </div>
-                </div>
-          </div>
-
-          {/* Filter Panel */}
-          <AnimatePresence>
-              {showFilters && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-sm">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                      <select
-                        value={filters.category}
-                        onChange={(e) => handleFilterChange('category', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                      >
-                        {CATEGORIES.map(cat => (
-                          <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-                      <select
-                        value={filters.industry}
-                        onChange={(e) => handleFilterChange('industry', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                      >
-                        {INDUSTRIES.map(ind => (
-                          <option key={ind} value={ind}>{ind}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                      <select
-                        value={filters.status}
-                        onChange={(e) => handleFilterChange('status', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                      >
-                        {STATUS_OPTIONS.map(status => (
-                          <option key={status} value={status}>{status}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                      <select
-                        value={filters.creatorType}
-                        onChange={(e) => handleFilterChange('creatorType', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
-                      >
-                        <option value="">All Types</option>
-                        <option value="customer">Customer Proposals</option>
-                        <option value="vendor">Vendor Proposals</option>
-                      </select>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-          {/* Proposals Grid */}
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            </div>
-          ) : filteredProposals.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-              <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No proposals found</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                {filters.search || filters.category !== 'All Categories' || filters.industry !== 'All Industries'
-                  ? 'Try adjusting your filters'
-                  : 'Get started by creating a new proposal'}
-              </p>
-              {!filters.search && filters.category === 'All Categories' && filters.industry === 'All Industries' && (
-                <div className="mt-6">
+                {/* Post New Need Button - Show for customers on Postings tab and vendors on My Postings tab */}
+                {((user?.role === 'customer' && activeTab === 'postings') || (user?.role === 'vendor' && activeTab === 'myPostings')) && (
                   <button
                     onClick={() => setShowCreateModal(true)}
-                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 inline-flex items-center gap-2 font-medium shadow-md hover:shadow-lg"
+                    className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 flex items-center gap-2 font-medium shadow-md hover:shadow-lg text-sm"
                   >
-                    <PlusIcon className="w-5 h-5" />
-                    List Your Problem
+                    <PlusIcon className="w-4 h-4" />
+                    Post a New Need
                   </button>
-                </div>
-              )}
+                )}
+                {/* Filter Button - Show for all tabs after search bar */}
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`p-2 border rounded-lg flex items-center justify-center transition-all ${
+                    showFilters 
+                      ? 'bg-purple-50 border-purple-300 text-purple-700 shadow-sm' 
+                      : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-sm'
+                  }`}
+                  title="Filter"
+                >
+                  <FunnelIcon className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          ) : (
+          </div>
+
+          {/* Filter Panel - Show for all tabs */}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden mb-6"
+              >
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-sm">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select
+                      value={filters.category}
+                      onChange={(e) => handleFilterChange('category', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm"
+                    >
+                      {CATEGORIES.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                    <select
+                      value={filters.industry}
+                      onChange={(e) => handleFilterChange('industry', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm"
+                    >
+                      {INDUSTRIES.map(ind => (
+                        <option key={ind} value={ind}>{ind}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select
+                      value={filters.status}
+                      onChange={(e) => handleFilterChange('status', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm"
+                    >
+                      {STATUS_OPTIONS.map(status => (
+                        <option key={status} value={status}>{status.replace('_', ' ')}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                    <select
+                      value={filters.priority}
+                      onChange={(e) => handleFilterChange('priority', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm"
+                    >
+                      {PRIORITY_OPTIONS.map(priority => (
+                        <option key={priority} value={priority}>{priority.replace('_', ' ')}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Tab Content */}
+          {user?.role === 'customer' && activeTab === 'postings' && (
+            <PostingsTab searchQuery={filters.search} filters={filters} refreshTrigger={refreshTrigger} />
+          )}
+
+          {/* Vendor Responses Tab */}
+          {user?.role === 'customer' && activeTab === 'vendorResponses' && (
+            <VendorResponsesTab searchQuery={filters.search} filters={filters} />
+          )}
+
+          {/* Opportunities Tab */}
+          {user?.role === 'vendor' && activeTab === 'findWork' && (
+            <FindWorkTab searchQuery={filters.search} filters={filters} />
+          )}
+
+          {/* My Postings Tab (Vendor's own proposals/problems) */}
+          {user?.role === 'vendor' && activeTab === 'myPostings' && (
+            <PostingsTab searchQuery={filters.search} filters={filters} refreshTrigger={refreshTrigger} />
+          )}
+
+          {/* My Proposals Tab (Vendor's responses to customer problems) */}
+          {user?.role === 'vendor' && activeTab === 'myProposals' && (
+            <MyProposalsTab searchQuery={filters.search} filters={filters} />
+          )}
+
+          {/* Legacy Proposals Grid - Keep for now as fallback */}
+          {user?.role !== 'customer' && user?.role !== 'vendor' && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-6">
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                </div>
+              ) : filteredProposals.length === 0 ? (
+                <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
+                  <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No proposals found</h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {filters.search || filters.category !== 'All Categories' || filters.industry !== 'All Industries'
+                      ? 'Try adjusting your filters'
+                      : 'Get started by creating a new proposal'}
+                  </p>
+                  {!filters.search && filters.category === 'All Categories' && filters.industry === 'All Industries' && (
+                    <div className="mt-6">
+                      <button
+                        onClick={() => setShowCreateModal(true)}
+                        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 inline-flex items-center gap-2 font-medium shadow-md hover:shadow-lg"
+                      >
+                        <PlusIcon className="w-5 h-5" />
+                        List Your Problem
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {filteredProposals.map((proposal) => (
                   <motion.div
                     key={proposal._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden relative"
+                    className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-200 overflow-hidden relative"
                     onClick={() => router.push(`/proposals/${proposal._id}`)}
                   >
                     {/* Elegant Purple Gradient Accent Bar */}
                     <div className="h-1 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600"></div>
                     
-                    <div className="p-8">
+                    <div className="p-6">
                       {/* Category Header with Icon */}
                       <div className="flex items-center gap-3 mb-6">
                         <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
@@ -523,18 +703,25 @@ const ProposalsPage: React.FC = () => {
                   </div>
                 </div>
               )}
+              </>
+            )}
             </>
           )}
         </div>
       </div>
 
-      {/* Create Proposal Modal */}
-      <CreateProposalModal
+      {/* Post Need Wizard */}
+      <PostNeedWizard
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onSuccess={() => {
+        onSuccess={(proposalId, matchedVendors) => {
           fetchProposals();
           setShowCreateModal(false);
+          // Trigger refresh for PostingsTab
+          setRefreshTrigger(prev => prev + 1);
+          if (matchedVendors && matchedVendors.length > 0) {
+            toast.success(`Found ${matchedVendors.length} matched vendors! You can invite them to bid.`);
+          }
         }}
       />
 
