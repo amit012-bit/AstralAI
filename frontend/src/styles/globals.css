@@ -480,7 +480,7 @@
   }
 }
 
-/* Solutions Hub Grid - Responsive */
+/* AstroVault AI Solutions Hub Grid - Responsive */
 @media (max-width: 640px) {
   .solutions-grid {
     grid-template-columns: repeat(4, 1fr) !important;

@@ -24,7 +24,7 @@ export function RoleSelection({ isOpen, onClose, onSelect }: RoleSelectionProps)
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 p-8 animate-in fade-in-50 duration-300">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-zinc-900 mb-3">Welcome to Solutions Hub</h2>
+          <h2 className="text-3xl font-bold text-zinc-900 mb-3">Welcome to AstroVault AI</h2>
           <p className="text-zinc-600 text-lg">
             Are you here to sell an AI solution or looking for an AI solution?
           </p>

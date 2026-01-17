@@ -32,9 +32,11 @@ export function SearchBarCard({ cols, rows, searchValue, onSearchChange, onSearc
       <div className="flex flex-col items-center gap-3 w-full">
         <div className="flex flex-col items-center gap-2 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gray-400">
-            Solutions Hub
+            <span className="text-xl sm:text-4xl md:text-3xl bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 bg-clip-text text-transparent font-extrabold tracking-widest drop-shadow-md animate-pulse">
+              AstroVault AI  <span className="text-white"> - Solutions Hub</span>
+            </span>
           </p>
-          <h1 className="text-2xl font-light sm:text-3xl text-white">What can I help with?</h1>
+          <h1 className="text-base font-light sm:text-lg md:text-xl text-white">What can I help with?</h1>
         </div>
         <SolutionsSearchBar value={searchValue} onChange={onSearchChange} onSubmit={onSearchSubmit} />
         {noMatchMessage && searchValue.trim() !== "" && (
